@@ -8,7 +8,7 @@ namespace Domain.Enums
 {
     public enum Genre
     {
-        Romance,
+        Romance = 1,
         Comedy,
         Children,
         Science,

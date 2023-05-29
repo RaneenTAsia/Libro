@@ -8,7 +8,7 @@ namespace Domain.Enums
 {
     public enum Status
     {
-        Available,
+        Available = 1,
         Borrowed,
         Overdue
     }

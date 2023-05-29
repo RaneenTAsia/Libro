@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Enums
 {
-    public enum Role
+    public enum Result
     {
-        Administrator = 1,
-        Librarian,
-        Patron
+        Completed = 1,
+        Failed
     }
 }

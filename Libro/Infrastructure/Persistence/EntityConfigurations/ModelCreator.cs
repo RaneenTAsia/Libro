@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.DTOs;
+using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -67,9 +68,11 @@ namespace Infrastructure.Persistence.EntityConfigurations
         {
             ModelBuilder.Entity<User>().Property(u => u.Role).IsRequired().HasDefaultValue(Role.Patron);
             ModelBuilder.Entity<User>().Property(u => u.Username).IsRequired().HasMaxLength(30);
+            ModelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
             ModelBuilder.Entity<User>().Property(u => u.Email).IsRequired().HasMaxLength(50);
             ModelBuilder.Entity<User>().Property(u => u.PasswordSalt).IsRequired();
             ModelBuilder.Entity<User>().Property(u => u.PasswordHash).IsRequired();
+            ModelBuilder.Entity<User>().HasAlternateKey(u => u.Email);
         }
 
         public void ConfigureBookTransactionFluentValidations()

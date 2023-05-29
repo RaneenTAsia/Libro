@@ -32,7 +32,7 @@ namespace Infrastructure.Persistence.EntityConfigurations
             return salt;
         }
 
-        public static bool VerifyPassword(string password, string salt,int iteration, string passwordToCompare)
+        public static bool VerifyPassword(string password, string salt, int iteration, string passwordToCompare)
         {
             string generatedPassword = ComputeHash(password, salt, iteration);
             return generatedPassword.Equals(passwordToCompare);
