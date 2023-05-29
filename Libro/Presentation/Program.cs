@@ -1,5 +1,6 @@
 using Application.Profiles;
 using AutoDependencyRegistration;
+using Domain.Enums;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure;
@@ -7,7 +8,9 @@ using Infrastructure.Validators;
 using MediatR;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +43,42 @@ builder.Services.AutoRegisterDependencies();
 
 builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Authentication:Issuer"],
+            ValidAudience = builder.Configuration["Authentication:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.ASCII.GetBytes(builder.Configuration["Authentication:SecretForKey"]))
+        };
+    }
+    );
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("MustBeAdministrator", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("role", Role.Administrator.ToString());
+    });
+
+    options.AddPolicy("MustBeLibrarian", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("role", Role.Librarian.ToString());
+    });
+
+    options.AddPolicy("MustBePatron", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("role", Role.Patron.ToString());
+    });
+});
 
 var app = builder.Build();
 

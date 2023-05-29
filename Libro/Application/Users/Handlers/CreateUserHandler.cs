@@ -30,7 +30,7 @@ namespace Application.Users.Handlers
             _logger= logger;
         }
 
-        public async Task<(UserDTO?, Result)> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<(UserDTO, Result)> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             if(await _userRepository.UserExistsByEmailAsync(request.Email))
             {

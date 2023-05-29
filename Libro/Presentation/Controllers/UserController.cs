@@ -35,5 +35,19 @@ namespace Presentation.Controllers
 
             return Ok(result.Item1);
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<string>> LoginAsync([FromBody] AuthenticateUserQuery userToLogin)
+        {
+            if(userToLogin == null)
+                return NotFound();
+
+            var result = await _mediator.Send(userToLogin);
+
+            if(result.Item2 == Result.Failed)
+                return Unauthorized(result.Item1);
+
+            return Ok(result.Item1);
+        }
     }
 }

@@ -8,6 +8,7 @@ namespace Infrastructure.Repositories
     {
         Task<(User, Result)> CreateUserAsync(User user);
         Task<bool> UserExistsByEmailAsync(string email);
+        Task<(User?, Result)> ValidateUserCredentials(string? email, string? Password);
         Task SaveChangesAsync();
     }
 }

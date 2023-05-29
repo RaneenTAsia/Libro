@@ -44,6 +44,21 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<(User?, Result)> ValidateUserCredentials(string? email, string? Password)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null)
+                return (user, Result.Failed);
+
+            var result = PasswordHasher.VerifyPassword(Password, user.PasswordSalt, 3, user.PasswordHash);
+            
+            if(result)
+                return (user, Result.Completed);
+
+            return (user, Result.Failed);
+        }
+
         public async Task<bool> UserExistsByEmailAsync(string email)
         {
             return await _context.Users.AnyAsync(u => u.Email == email);
