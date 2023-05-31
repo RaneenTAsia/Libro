@@ -22,6 +22,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+// Add services to the container.
+
+builder.Services.AddControllers(options =>
+{
+    options.ReturnHttpNotAcceptable = true;
+}).AddNewtonsoftJson()
+.AddXmlDataContractSerializerFormatters();
+
 //allows us to inject a content type provider in other parts of our code
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 
@@ -46,8 +55,11 @@ builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
     {
+        options.IncludeErrorDetails = true;
+
         options.TokenValidationParameters = new()
         {
+            ValidateLifetime= true,
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
@@ -64,19 +76,19 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("MustBeAdministrator", policy =>
     {
         policy.RequireAuthenticatedUser();
-        policy.RequireClaim("role", Role.Administrator.ToString());
+        policy.RequireRole( "Administrator");
     });
 
     options.AddPolicy("MustBeLibrarian", policy =>
     {
         policy.RequireAuthenticatedUser();
-        policy.RequireClaim("role", Role.Librarian.ToString());
+        policy.RequireRole( "Librarian");
     });
 
     options.AddPolicy("MustBePatron", policy =>
     {
         policy.RequireAuthenticatedUser();
-        policy.RequireClaim("role", Role.Patron.ToString());
+        policy.RequireRole("Patron");
     });
 });
 
@@ -90,6 +102,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

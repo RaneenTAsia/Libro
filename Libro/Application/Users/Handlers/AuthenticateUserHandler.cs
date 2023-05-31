@@ -55,7 +55,7 @@ namespace Application.Users.Handlers
             claimsForToken.Add(new Claim("email", user.Email));
             claimsForToken.Add(new Claim("passwordHash", user.PasswordHash));
             claimsForToken.Add(new Claim("passwordSalt", user.PasswordSalt));
-            claimsForToken.Add(new Claim("role", user.Role.ToString()));
+            claimsForToken.Add(new Claim(ClaimTypes.Role , user.Role.ToString()));
 
             var jwtSecurityToken = new JwtSecurityToken(
                 _configuration["Authentication:Issuer"],
