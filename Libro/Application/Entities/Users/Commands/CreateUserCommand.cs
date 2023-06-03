@@ -9,9 +9,9 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Users.Commands
+namespace Application.Entities.Users.Commands
 {
-    public class CreateUserCommand : IRequest<(UserDTO,Result)>
+    public class CreateUserCommand : IRequest<(UserDTO, Result)>
     {
         public string Username { get; set; }
         public string Email { get; set; }

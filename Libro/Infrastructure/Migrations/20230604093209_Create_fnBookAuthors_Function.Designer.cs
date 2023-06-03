@@ -4,6 +4,7 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(LibroDbContext))]
-    partial class LibroDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230604093209_Create_fnBookAuthors_Function")]
+    partial class Create_fnBookAuthors_Function
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -399,6 +402,25 @@ namespace Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Domain.Entities.SearchedAuthorBooksFunctionResult", b =>
+                {
+                    b.Property<string>("AuthorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("BookGenreId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BookName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("SearchedAuthorBooksFunctionResult");
+                });
+
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -444,8 +466,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 1,
                             Email = "Rami@gmail.com",
-                            PasswordHash = "IrF11kt82gN9je8tSCNN9GhXy+sEIn5aMuU8Eoh5b8Y=",
-                            PasswordSalt = "c5XEsr7zLlsp5vEkO5zuzw==",
+                            PasswordHash = "QK/wZrMoFP1HJEeNrvib055jBNeBSAW2KNW4kuk9XG4=",
+                            PasswordSalt = "Nia1JDoML3kENMlQBe3Dqw==",
                             Role = 1,
                             Username = "Rami"
                         },
@@ -453,8 +475,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 2,
                             Email = "RayyanTawfieg@gmail.com",
-                            PasswordHash = "a5t0xDFjy3UhOk+L39cHu+rhOyaHlbXE7nXmVo4dHdw=",
-                            PasswordSalt = "c5XEsr7zLlsp5vEkO5zuzw==",
+                            PasswordHash = "uuojDeaa50wZNICAvmKjsDCsiifzWgy0tgFGXCSE9kA=",
+                            PasswordSalt = "Nia1JDoML3kENMlQBe3Dqw==",
                             Role = 2,
                             Username = "Rayyan"
                         },
@@ -462,8 +484,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 3,
                             Email = "Raneenasia101@gmail.com",
-                            PasswordHash = "X3SJd+bsAg6B9Qwb/1BH20p4SZUnf4rdBakN6TXJu9A=",
-                            PasswordSalt = "c5XEsr7zLlsp5vEkO5zuzw==",
+                            PasswordHash = "eIZnZdNKZDOxf6mVZMYZ3DQsueRe/9OCw7hPVRppj7U=",
+                            PasswordSalt = "Nia1JDoML3kENMlQBe3Dqw==",
                             Role = 3,
                             Username = "Raneen"
                         },
@@ -471,8 +493,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 4,
                             Email = "Reema@gmail.com",
-                            PasswordHash = "gxH93MTD6PCmZ8Go40IK3xN1IQH5jVkM/ZjK6I7bDoI=",
-                            PasswordSalt = "c5XEsr7zLlsp5vEkO5zuzw==",
+                            PasswordHash = "noP3Ocl0tPIsWTmuos7WN/dvEfuJXxeL5a2J69sEYaI=",
+                            PasswordSalt = "Nia1JDoML3kENMlQBe3Dqw==",
                             Role = 3,
                             Username = "Reema"
                         });

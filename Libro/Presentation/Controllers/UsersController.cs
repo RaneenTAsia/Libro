@@ -1,12 +1,8 @@
 ﻿using Application.DTOs;
-using Application.Users.Commands;
-using Application.Users.Queries;
-using Azure;
+using Application.Entities.Users.Commands;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers
@@ -29,11 +25,11 @@ namespace Presentation.Controllers
             if (role == null)
                 return BadRequest();
 
-            var request = new ChangeUserRoleCommand { Role = role.Role, UserId = userId};
+            var request = new ChangeUserRoleCommand { Role = role.Role, UserId = userId };
 
             var result = await _mediator.Send(request);
 
-            if(result.Item1 == Result.Failed)
+            if (result.Item1 == Result.Failed)
             {
                 return BadRequest(result.Item2);
             }

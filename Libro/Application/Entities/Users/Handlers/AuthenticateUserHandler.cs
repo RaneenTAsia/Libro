@@ -1,8 +1,8 @@
-﻿using Application.DTOs;
-using Application.Users.Queries;
+﻿using Application.Abstractions.Repositories;
+using Application.DTOs;
+using Application.Entities.Users.Queries;
 using AutoMapper;
 using Domain.Enums;
-using Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -15,15 +15,15 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Users.Handlers
+namespace Application.Entities.Users.Handlers
 {
     public class AuthenticateUserHandler : IRequestHandler<AuthenticateUserQuery, (string, Result)>
     {
         public readonly IUserRepository _userRepository;
-        public readonly ILogger<CreateUserHandler> _logger;
+        public readonly ILogger<AuthenticateUserHandler> _logger;
         private readonly IConfiguration _configuration;
 
-        public AuthenticateUserHandler(IUserRepository userRepository, ILogger<CreateUserHandler> logger, IConfiguration configuration)
+        public AuthenticateUserHandler(IUserRepository userRepository, ILogger<AuthenticateUserHandler> logger, IConfiguration configuration)
         {
             _userRepository = userRepository;
             _logger = logger;
@@ -36,7 +36,7 @@ namespace Application.Users.Handlers
 
             var (user, result) = await _userRepository.ValidateUserCredentials(request.Email, request.Password);
 
-            if(result == Result.Failed)
+            if (result == Result.Failed)
             {
                 return ("Incorrect email or password", Result.Failed);
             }
@@ -55,7 +55,7 @@ namespace Application.Users.Handlers
             claimsForToken.Add(new Claim("email", user.Email));
             claimsForToken.Add(new Claim("passwordHash", user.PasswordHash));
             claimsForToken.Add(new Claim("passwordSalt", user.PasswordSalt));
-            claimsForToken.Add(new Claim(ClaimTypes.Role , user.Role.ToString()));
+            claimsForToken.Add(new Claim(ClaimTypes.Role, user.Role.ToString()));
 
             var jwtSecurityToken = new JwtSecurityToken(
                 _configuration["Authentication:Issuer"],

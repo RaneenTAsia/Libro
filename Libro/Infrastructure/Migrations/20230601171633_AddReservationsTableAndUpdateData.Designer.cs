@@ -4,6 +4,7 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(LibroDbContext))]
-    partial class LibroDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230601171633_AddReservationsTableAndUpdateData")]
+    partial class AddReservationsTableAndUpdateData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -280,7 +283,7 @@ namespace Infrastructure.Migrations
                         {
                             BookReservationId = 1,
                             BookId = 1,
-                            ReserveDate = new DateTime(2023, 6, 4, 0, 0, 0, 0, DateTimeKind.Local),
+                            ReserveDate = new DateTime(2023, 6, 1, 0, 0, 0, 0, DateTimeKind.Local),
                             UserId = 4
                         });
                 });
@@ -298,48 +301,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("BookGenreId");
 
                     b.ToTable("BooksToBookGenres", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            BookId = 1,
-                            BookGenreId = 10
-                        },
-                        new
-                        {
-                            BookId = 1,
-                            BookGenreId = 5
-                        },
-                        new
-                        {
-                            BookId = 2,
-                            BookGenreId = 10
-                        },
-                        new
-                        {
-                            BookId = 2,
-                            BookGenreId = 5
-                        },
-                        new
-                        {
-                            BookId = 3,
-                            BookGenreId = 10
-                        },
-                        new
-                        {
-                            BookId = 3,
-                            BookGenreId = 12
-                        },
-                        new
-                        {
-                            BookId = 4,
-                            BookGenreId = 13
-                        },
-                        new
-                        {
-                            BookId = 4,
-                            BookGenreId = 7
-                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.BookTransaction", b =>
@@ -444,8 +405,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 1,
                             Email = "Rami@gmail.com",
-                            PasswordHash = "IrF11kt82gN9je8tSCNN9GhXy+sEIn5aMuU8Eoh5b8Y=",
-                            PasswordSalt = "c5XEsr7zLlsp5vEkO5zuzw==",
+                            PasswordHash = "AAVdQGb3Q/nGxxzN43T2l5zOuQe2+nzDTpMCWLPxX2A=",
+                            PasswordSalt = "gY+S8TX9ZA2oG1coRz6R/A==",
                             Role = 1,
                             Username = "Rami"
                         },
@@ -453,8 +414,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 2,
                             Email = "RayyanTawfieg@gmail.com",
-                            PasswordHash = "a5t0xDFjy3UhOk+L39cHu+rhOyaHlbXE7nXmVo4dHdw=",
-                            PasswordSalt = "c5XEsr7zLlsp5vEkO5zuzw==",
+                            PasswordHash = "3sAIPU2qd7oyrGaR1APE5yvFbXraSIrEg7/jKtYHgW4=",
+                            PasswordSalt = "gY+S8TX9ZA2oG1coRz6R/A==",
                             Role = 2,
                             Username = "Rayyan"
                         },
@@ -462,8 +423,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 3,
                             Email = "Raneenasia101@gmail.com",
-                            PasswordHash = "X3SJd+bsAg6B9Qwb/1BH20p4SZUnf4rdBakN6TXJu9A=",
-                            PasswordSalt = "c5XEsr7zLlsp5vEkO5zuzw==",
+                            PasswordHash = "jFwwThzPwo2p/t2J82F69ZUYS95k9gzs+oAGSr/PpOg=",
+                            PasswordSalt = "gY+S8TX9ZA2oG1coRz6R/A==",
                             Role = 3,
                             Username = "Raneen"
                         },
@@ -471,45 +432,11 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 4,
                             Email = "Reema@gmail.com",
-                            PasswordHash = "gxH93MTD6PCmZ8Go40IK3xN1IQH5jVkM/ZjK6I7bDoI=",
-                            PasswordSalt = "c5XEsr7zLlsp5vEkO5zuzw==",
+                            PasswordHash = "YqWnNabO8fhTsO2ktWJd9PFSPeybSxYrZ3zM5rqbzA4=",
+                            PasswordSalt = "gY+S8TX9ZA2oG1coRz6R/A==",
                             Role = 3,
                             Username = "Reema"
                         });
-                });
-
-            modelBuilder.Entity("Domain.Entities.ViewBooks", b =>
-                {
-                    b.Property<string>("Authors")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BookGenres")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BookStatus")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PageAmount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("PublishDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.ToTable((string)null);
-
-                    b.ToView("viewBooks", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.AuthorToBook", b =>

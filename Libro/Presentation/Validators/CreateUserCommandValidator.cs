@@ -1,4 +1,4 @@
-﻿using Application.Users.Commands;
+﻿using Application.Entities.Users.Commands;
 using FluentValidation;
 using System;
 using System.Collections.Generic;

@@ -18,4 +18,9 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstractions\" />
+    <Folder Include="Entities\Books\Commands\" />
+  </ItemGroup>
+
 </Project>

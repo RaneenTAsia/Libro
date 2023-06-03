@@ -1,8 +1,7 @@
-﻿using Application.DTOs;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Enums;
 
-namespace Infrastructure.Repositories
+namespace Application.Abstractions.Repositories
 {
     public interface IUserRepository
     {

@@ -1,6 +1,6 @@
 ﻿using Application.DTOs;
-using Application.Users.Commands;
-using Application.Users.Queries;
+using Application.Entities.Users.Commands;
+using Application.Entities.Users.Queries;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

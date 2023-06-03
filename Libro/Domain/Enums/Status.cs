@@ -9,6 +9,7 @@ namespace Domain.Enums
     public enum Status
     {
         Available = 1,
+        Reserved,
         Borrowed,
         Overdue
     }

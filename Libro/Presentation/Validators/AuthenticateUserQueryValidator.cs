@@ -1,4 +1,4 @@
-﻿using Application.Users.Queries;
+﻿using Application.Entities.Users.Queries;
 using FluentValidation;
 
 namespace Presentation.Validators

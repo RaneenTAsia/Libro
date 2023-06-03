@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Users.Commands
+namespace Application.Entities.Users.Commands
 {
-    public class ChangeUserRoleCommand : IRequest<(Result,string)>
+    public class ChangeUserRoleCommand : IRequest<(Result, string)>
     {
         public int UserId { get; set; }
         public int Role { get; set; }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -31,6 +32,7 @@ namespace Infrastructure.Persistence.EntityConfigurations
             ConfigureAuthorToBookFluentValidations();
             ConfigureUserFluentValidations();
             ConfigureBookTransactionFluentValidations();
+            ConfigureBookReservationFluentValidations();
         }
 
         public void SeedTables()
@@ -42,6 +44,7 @@ namespace Infrastructure.Persistence.EntityConfigurations
             SeedAuthorsToBooksTable();
             SeedUserTable();
             SeedBookTransactionsTable();
+            SeedBookReservationsTable();
         }
 
         public void ConfigureAuthorFluentValidations()
@@ -83,6 +86,13 @@ namespace Infrastructure.Persistence.EntityConfigurations
             ModelBuilder.Entity<BookTransaction>().Property(bt => bt.ReturnDate).HasColumnType("DATE");
             ModelBuilder.Entity<BookTransaction>().Property(bt => bt.Fine).HasDefaultValue(0);
             ModelBuilder.Entity<BookTransaction>().Property(bt => bt.BookId).IsRequired();
+        }
+
+        public void ConfigureBookReservationFluentValidations()
+        {
+            ModelBuilder.Entity<BookReservation>().Property(br => br.UserId).IsRequired();
+            ModelBuilder.Entity<BookReservation>().Property(br => br.ReserveDate).IsRequired().HasColumnType("DATE");
+            ModelBuilder.Entity<BookReservation>().Property(br => br.BookId).IsRequired();
         }
 
         public void ConfigureBookGenreFluentValidations()
@@ -172,9 +182,9 @@ namespace Infrastructure.Persistence.EntityConfigurations
         {
             List<Book> Books = new List<Book>()
             {
-                new Book{ BookId = 1, Title = "The Casque of Amontillado"},
-                new Book{ BookId = 2, Title = "The Masque of Red Death"},
-                new Book{ BookId = 3, Title = "IT"},
+                new Book{ BookId = 1, Title = "The Casque of Amontillado", BookStatus = (int)Status.Borrowed},
+                new Book{ BookId = 2, Title = "The Masque of Red Death", BookStatus = (int) Status.Borrowed},
+                new Book{ BookId = 3, Title = "IT", BookStatus = (int) Status.Reserved},
                 new Book{ BookId = 4, Title = "Harry Potter and The Chamber of Secrets"}
             };
 
@@ -194,6 +204,8 @@ namespace Infrastructure.Persistence.EntityConfigurations
                 new BookToBookGenre{ BookId = 4, BookGenreId = Genre.Fantasy},
                 new BookToBookGenre{ BookId = 4, BookGenreId = Genre.Action}
             };
+
+            ModelBuilder.Entity<BookToBookGenre>().HasData(BooksToBooksGenres);
         }
 
         public void SeedAuthorsToBooksTable()
@@ -216,7 +228,8 @@ namespace Infrastructure.Persistence.EntityConfigurations
             {
                 new User{ UserId = 1, Username = "Rami", PasswordSalt = salt, PasswordHash = PasswordHasher.ComputeHash("Rami123", salt, 3), Email = "Rami@gmail.com", Role = Role.Administrator},
                 new User{ UserId = 2, Username = "Rayyan", PasswordSalt = salt, PasswordHash = PasswordHasher.ComputeHash("Rayyan123", salt, 3), Email = "RayyanTawfieg@gmail.com", Role = Role.Librarian},
-                new User{ UserId = 3, Username = "Raneen", PasswordSalt = salt, PasswordHash = PasswordHasher.ComputeHash("Raneen123", salt, 3), Email = "Raneenasia101@gmail.com", Role = Role.Patron}
+                new User{ UserId = 3, Username = "Raneen", PasswordSalt = salt, PasswordHash = PasswordHasher.ComputeHash("Raneen123", salt, 3), Email = "Raneenasia101@gmail.com", Role = Role.Patron},
+                 new User{ UserId = 4, Username = "Reema", PasswordSalt = salt, PasswordHash = PasswordHasher.ComputeHash("Reema123", salt, 3), Email = "Reema@gmail.com", Role = Role.Patron}
             };
 
             ModelBuilder.Entity<User>().HasData(users);
@@ -231,6 +244,20 @@ namespace Infrastructure.Persistence.EntityConfigurations
             };
 
             ModelBuilder.Entity<BookTransaction>().HasData(bookTransactions);
+        }
+        public void SeedBookReservationsTable()
+        {
+            List<BookReservation> bookReservations = new List<BookReservation>()
+            {
+                new BookReservation{ BookReservationId = 1, BookId = 1, UserId = 4, ReserveDate = DateTime.Now.Date}
+            };
+
+            ModelBuilder.Entity<BookReservation>().HasData(bookReservations);
+        }
+
+        public void MapViews()
+        {
+            ModelBuilder.Entity<ViewBooks>().HasNoKey().ToView("viewBooks");
         }
     }
 }

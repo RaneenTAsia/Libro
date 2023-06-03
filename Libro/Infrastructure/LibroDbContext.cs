@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Infrastructure.Persistence.EntityConfigurations;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -20,6 +21,10 @@ namespace Infrastructure
         public DbSet<AuthorToBook> AuthorsToBooks { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<BookTransaction> BookTransactions { get; set; }
+        public DbSet<BookReservation> BookReservations { get; set; }
+        public string BookAuthorsFunctionResult(int bookId) => throw new NotSupportedException();
+        public string BookGenresFunctionResult (int bookId) => throw new NotSupportedException();
+        public DbSet<ViewBooks> ViewBooks { get; set; }
 
         public LibroDbContext()
         {
@@ -46,6 +51,14 @@ namespace Infrastructure
             ModelCreator creator = new ModelCreator(modelBuilder);
             creator.ConfigureFluentValidations();
             creator.SeedTables();
+
+            modelBuilder.HasDbFunction(typeof(LibroDbContext).GetMethod(nameof(BookGenresFunctionResult), new[] { typeof(int) }))
+                .HasName("BookGenres");
+
+            modelBuilder.HasDbFunction(typeof(LibroDbContext).GetMethod(nameof(BookAuthorsFunctionResult), new[] { typeof(int) }))
+                 .HasName("BookAuthors");
+
+            creator.MapViews();
         }
     }
 }

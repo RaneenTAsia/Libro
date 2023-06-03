@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Users.Queries
+namespace Application.Entities.Users.Queries
 {
     public class AuthenticateUserQuery : IRequest<(string, Result)>
     {
