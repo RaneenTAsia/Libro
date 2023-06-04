@@ -32,7 +32,6 @@ namespace Application.Entities.Books.Handlers
             if (maxPageSize < request.pageSize)
                 request.pageSize = maxPageSize;
 
-
             var resultList = await _viewBookRepository.GetBooksAsync();
 
             _logger.LogInformation($"Execute SearchAuthorBooks Function with value {request.Author}");
@@ -41,6 +40,7 @@ namespace Application.Entities.Books.Handlers
             {
                 var authorList = _viewBookRepository.GetBooksWithAuthor(request.Author);
                 resultList = resultList.Where(r => authorList.Any(l => l.BookId == r.BookId)).ToList();
+
                 _logger.LogInformation($"Search ViewBooks for author value {request.Author}");
             }
 
@@ -56,7 +56,6 @@ namespace Application.Entities.Books.Handlers
             {
 
                 var list = _bookToGenreRepository.GetBookIdsByGenreId((int)request.GenreId);
-
                 resultList = resultList.Where(r => list.Any(l => l.BookId == r.BookId)).ToList();
 
                 _logger.LogInformation($"Search SearchAuthorBooks Function result for GenreId {request.GenreId}");

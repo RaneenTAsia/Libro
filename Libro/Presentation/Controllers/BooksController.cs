@@ -41,5 +41,15 @@ namespace Presentation.Controllers
 
             return Ok(request.Item1);
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetBookId(int id)
+        {
+            var query = new GetBookDetailsQuery { BookId= id };
+
+            var request = await _mediator.Send(query);
+
+            return Ok(request);
+        }
     }
 }
