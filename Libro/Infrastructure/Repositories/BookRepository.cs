@@ -1,8 +1,7 @@
-﻿using Application.Abstractions.Repositories;
-using AutoDependencyRegistration.Attributes;
+﻿using AutoDependencyRegistration.Attributes;
 using Domain.Entities;
 using Domain.Enums;
-using Microsoft.EntityFrameworkCore;
+using Domain.Repositories;
 
 namespace Infrastructure.Repositories
 {
@@ -16,9 +15,30 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Book?> GetBookById(int id)
+        public async Task<Book?> GetBookByIdAsync(int id)
         {
             return await _context.Books.FindAsync(id);
+        }
+
+        public async Task<Result> SetBookAsReservedAsync(int bookId)
+        {
+            var book = await _context.Books.FindAsync(bookId);
+
+            if(book == null)
+            {
+                return Result.Failed;
+            }
+
+            book.BookStatus = (int)Status.Reserved;
+
+            return Result.Completed;
+        }
+
+        public async Task<bool> CheckBookIsAvailableAsync(int id)
+        {
+            var book = await _context.Books.FindAsync(id);
+
+            return book.BookStatus == (int)Status.Available;
         }
     }
 }

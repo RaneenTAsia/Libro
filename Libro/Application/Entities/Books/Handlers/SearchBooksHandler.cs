@@ -1,13 +1,10 @@
-﻿using Application.Abstractions.Repositories;
-using Application.Configurations;
+﻿using Application.Configurations;
 using Application.DTOs;
 using Application.Entities.Books.Queries;
 using AutoMapper;
 using Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Application.Entities.Books.Handlers
 {

@@ -1,16 +1,9 @@
-﻿using Application.Abstractions.Repositories;
-using AutoDependencyRegistration.Attributes;
+﻿using AutoDependencyRegistration.Attributes;
 using Domain.Entities;
 using Domain.Enums;
+using Domain.Repositories;
 using Infrastructure.Persistence.EntityConfigurations;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -24,9 +17,9 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<( User, Result)> CreateUserAsync(User user)
+        public async Task<(User, Result)> CreateUserAsync(User user)
         {
-            if (user == null) 
+            if (user == null)
                 return (user, Result.Failed);
 
             await _context.Users.AddAsync(user);
@@ -55,8 +48,8 @@ namespace Infrastructure.Repositories
                 return (user, Result.Failed);
 
             var result = PasswordHasher.VerifyPassword(Password, user.PasswordSalt, 3, user.PasswordHash);
-            
-            if(result)
+
+            if (result)
                 return (user, Result.Completed);
 
             return (user, Result.Failed);

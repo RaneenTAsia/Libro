@@ -1,9 +1,7 @@
-﻿using Application.Abstractions.Repositories;
-using Application.Configurations;
+﻿using Application.Configurations;
 using Application.DTOs;
 using Application.Entities.Books.Queries;
 using AutoMapper;
-using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
 using MediatR;
@@ -11,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.Entities.Books.Handlers
 {
-    public class BrowseAvailableBooksHandler : IRequestHandler<BrowseAvailableBooksQuery, (List<BrowsingBookDTO>,PaginationMetadata)>
+    public class BrowseAvailableBooksHandler : IRequestHandler<BrowseAvailableBooksQuery, (List<BrowsingBookDTO>, PaginationMetadata)>
     {
         public readonly IViewBooksRepository _viewBookRepository;
         public readonly ILogger<BrowseAvailableBooksHandler> _logger;
@@ -24,7 +22,7 @@ namespace Application.Entities.Books.Handlers
             _logger = logger;
             _mapper = mapper;
         }
-        public async Task<(List<BrowsingBookDTO>,PaginationMetadata)> Handle(BrowseAvailableBooksQuery request, CancellationToken cancellationToken)
+        public async Task<(List<BrowsingBookDTO>, PaginationMetadata)> Handle(BrowseAvailableBooksQuery request, CancellationToken cancellationToken)
         {
             if (maxPageSize < request.pageSize)
                 request.pageSize = maxPageSize;

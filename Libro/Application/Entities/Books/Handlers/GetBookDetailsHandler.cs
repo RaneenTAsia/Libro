@@ -1,22 +1,13 @@
-﻿using Application.Abstractions.Repositories;
-using Application.Configurations;
-using Application.DTOs;
+﻿using Application.DTOs;
 using Application.Entities.Books.Queries;
 using AutoMapper;
-using Domain.Entities;
-using Domain.Enums;
 using Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Entities.Books.Handlers
 {
-    public class GetBookDetailsHandler :IRequestHandler<GetBookDetailsQuery, BookDetailsDTO>
+    public class GetBookDetailsHandler : IRequestHandler<GetBookDetailsQuery, BookDetailsDTO>
     {
         public readonly IViewBooksRepository _viewBookRepository;
         public readonly ILogger<GetBookDetailsHandler> _logger;

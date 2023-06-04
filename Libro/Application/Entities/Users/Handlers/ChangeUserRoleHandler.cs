@@ -1,16 +1,9 @@
-﻿using Application.Abstractions.Repositories;
-using Application.DTOs;
-using Application.Entities.Users.Commands;
+﻿using Application.Entities.Users.Commands;
 using AutoMapper;
 using Domain.Enums;
+using Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Entities.Users.Handlers
 {

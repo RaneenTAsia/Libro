@@ -1,19 +1,12 @@
-﻿using Application.Abstractions.Repositories;
-using Application.DTOs;
+﻿using Application.DTOs;
 using Application.Entities.Users.Commands;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
+using Domain.Repositories;
 using Infrastructure.Persistence.EntityConfigurations;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Entities.Users.Handlers
 {

@@ -1,19 +1,13 @@
-﻿using Application.Abstractions.Repositories;
-using Application.DTOs;
-using Application.Entities.Users.Queries;
-using AutoMapper;
+﻿using Application.Entities.Users.Queries;
 using Domain.Enums;
+using Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Entities.Users.Handlers
 {
@@ -50,7 +44,7 @@ namespace Application.Entities.Users.Handlers
                 securityKey, SecurityAlgorithms.HmacSha256);
 
             var claimsForToken = new List<Claim>();
-            claimsForToken.Add(new Claim("sub", user.UserId.ToString()));
+            claimsForToken.Add(new Claim("sub", $"{user.UserId}"));
             claimsForToken.Add(new Claim("username", user.Username));
             claimsForToken.Add(new Claim("email", user.Email));
             claimsForToken.Add(new Claim("passwordHash", user.PasswordHash));

@@ -1,9 +1,12 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 
-namespace Application.Abstractions.Repositories
+namespace Domain.Repositories
 {
     public interface IBookRepository
     {
-        Task<Book?> GetBookById(int id);
+        Task<Book?> GetBookByIdAsync(int id);
+        Task<Result> SetBookAsReservedAsync(int bookId);
+        Task<bool> CheckBookIsAvailableAsync(int id);
     }
 }
