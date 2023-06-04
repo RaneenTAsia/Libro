@@ -28,5 +28,18 @@ namespace Presentation.Controllers
 
             return Ok(request.Item1);
         }
+
+        [HttpGet("browse")]
+        public async Task<ActionResult> BrowseBooksAsync( int pageNumber = 1, int pageSize = 10)
+        {
+            var query = new BrowseAvailableBooksQuery {  pageNumber = pageNumber, pageSize = pageSize };
+
+            var request = await _mediator.Send(query);
+
+            Response.Headers.Add("X-Pagination",
+                JsonSerializer.Serialize(request.Item2));
+
+            return Ok(request.Item1);
+        }
     }
 }
