@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
@@ -39,6 +40,18 @@ namespace Infrastructure.Repositories
             var book = await _context.Books.FindAsync(id);
 
             return book.BookStatus == (int)Status.Available;
+        }
+
+        public async Task<Status> GetBookStatusByIdAsync(int bookId)
+        {
+            var book = await _context.Books.FindAsync(bookId);
+
+            return (Status)book.BookStatus;
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

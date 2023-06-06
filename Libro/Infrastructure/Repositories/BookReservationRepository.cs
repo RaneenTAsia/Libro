@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,28 @@ namespace Infrastructure.Repositories
             }
 
             return Result.Failed;
+        }
+
+        public async Task<bool> BookReservationExistsAsync(int userId, int bookId)
+        {
+            return await _context.BookReservations.AnyAsync(br => br.UserId == userId && br.BookId == bookId);
+        }
+
+        public async Task<Result> DeleteBookReservation(BookReservation reservation)
+        {
+            var deleted = _context.BookReservations.Remove(reservation);
+            await _context.SaveChangesAsync();
+
+            if(await BookReservationExistsAsync(reservation.UserId, reservation.BookId))
+            {
+                return Result.Failed;
+            }
+            return Result.Completed;
+        }
+
+        public BookReservation? GetBookReservation(int userId, int bookId)
+        {
+            return _context.BookReservations.FirstOrDefault(br => br.UserId == userId && br.BookId == bookId);
         }
     }
 }

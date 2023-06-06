@@ -9,11 +9,20 @@ using MediatR;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseSerilog();
+
+//var logger = new LoggerConfiguration()
+//        .ReadFrom.Configuration(builder.Configuration)
+//        .Enrich.FromLogContext()
+//        .CreateLogger();
+//builder.Logging.ClearProviders();
+//builder.Logging.AddSerilog(logger);
 
 // Add services to the container.
 

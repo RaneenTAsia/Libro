@@ -1,4 +1,5 @@
-﻿using Application.Entities.Books.Commands;
+﻿using Application.DTOs;
+using Application.Entities.Books.Commands;
 using Application.Entities.Books.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -70,6 +71,20 @@ namespace Presentation.Controllers
             }
 
             return Ok(request.Item2);
+        }
+
+        [HttpPost("checkout")]
+        [Authorize(Policy ="MustBeLibrarian")]
+        public async Task<ActionResult> CheckoutBook(CheckoutBookCommand command)
+        {
+            var request = await _mediator.Send(command);
+
+            if(request.Item1 == null)
+            {
+                return BadRequest(request.Item2);
+            }
+
+            return Ok(request.Item1);
         }
     }
 }

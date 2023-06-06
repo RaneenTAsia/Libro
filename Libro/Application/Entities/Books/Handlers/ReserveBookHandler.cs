@@ -12,10 +12,10 @@ namespace Application.Entities.Books.Handlers
     {
         public readonly IBookRepository _bookRepository;
         public readonly IBookReservationRepository _bookReservationRepository;
-        public readonly ILogger<GetBookDetailsHandler> _logger;
+        public readonly ILogger<ReserveBookHandler> _logger;
         public readonly IMapper _mapper;
 
-        public ReserveBookHandler(IBookRepository bookRepository, IBookReservationRepository bookReservationRepository, ILogger<GetBookDetailsHandler> logger, IMapper mapper)
+        public ReserveBookHandler(IBookRepository bookRepository, IBookReservationRepository bookReservationRepository, ILogger<ReserveBookHandler> logger, IMapper mapper)
         {
             _bookRepository = bookRepository;
             _bookReservationRepository = bookReservationRepository;
