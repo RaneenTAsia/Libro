@@ -39,9 +39,14 @@ namespace Infrastructure.Repositories
             return await _context.BookTransactions.AnyAsync(bt => bt.BookTransactionId == transactionId);
         }
 
-        public async Task<int> BookTransactionCountOfUserById(int userId)
+        public async Task<int> BookTransactionCurrentCountOfUserByIdAsync(int userId)
         {
-            return await _context.BookTransactions.CountAsync(c => c.UserId == userId);
+            return await _context.BookTransactions.CountAsync(c => c.UserId == userId && c.ReturnDate == null);
+        }
+
+        public async Task<BookTransaction?> OngoingBookTransationByBookIdAsync(int bookId)
+        {
+            return await _context.BookTransactions.FirstOrDefaultAsync(bt => bt.BookId == bookId && !bt.ReturnDate.HasValue);
         }
     }
 }

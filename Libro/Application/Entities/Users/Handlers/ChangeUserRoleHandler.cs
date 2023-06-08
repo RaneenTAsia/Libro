@@ -1,4 +1,4 @@
-﻿using Application.Entities.Users.Commands;
+﻿﻿using Application.Entities.Users.Commands;
 using AutoMapper;
 using Domain.Enums;
 using Domain.Repositories;
@@ -26,25 +26,24 @@ namespace Application.Entities.Users.Handlers
             string resultMessage;
             if (user == null)
             {
-                resultMessage = $"User with UserId {request.UserId} does not exist";
-                _logger.LogInformation(resultMessage);
-                return (Result.Failed, resultMessage);
+                _logger.LogDebug("User with UserId {0} does not exist", request.UserId);
+                return (Result.Failed, $"User with userId {user.UserId} does not exist");
             }
 
             if (user.Role == (Role)request.Role)
             {
-                resultMessage = $"User already has this role";
-                _logger.LogInformation(resultMessage);
+                resultMessage = "User already has this role";
+                _logger.LogDebug(resultMessage);
                 return (Result.Failed, resultMessage);
             }
 
-            _logger.LogInformation($"User with UserId {request.UserId} has role {user.Role} before update");
+            _logger.LogDebug("User with UserId {0} has role {1} before update", user.UserId, user.Role);
 
             user.Role = (Role)request.Role;
 
             await _userRepository.SaveChangesAsync();
 
-            _logger.LogInformation($"User with UserId {request.UserId} has role {user.Role} after update");
+            _logger.LogDebug("User with UserId {0} has role {1} after update", user.UserId, user.Role);
 
             return (Result.Completed, "Successfulyy changed role");
         }

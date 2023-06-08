@@ -1,10 +1,10 @@
-﻿using Application.DTOs;
+﻿using Application.Configurations;
+using Application.DTOs;
 using Application.Entities.Users.Commands;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
-using Infrastructure.Persistence.EntityConfigurations;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -36,7 +36,7 @@ namespace Application.Entities.Users.Handlers
 
             var (user, result) = await _userRepository.CreateUserAsync(userToAdd);
 
-            _logger.LogInformation($"Created User with username: {user.Username} and email: {user.Email}");
+            _logger.LogDebug("Created User with username: {0} and email: {user.Email}", user.Username);
 
             var userAdded = _mapper.Map<UserDTO>(user);
             return (userAdded, result);

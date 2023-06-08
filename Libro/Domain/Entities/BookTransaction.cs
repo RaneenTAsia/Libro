@@ -18,7 +18,7 @@ namespace Domain.Entities
         public DateTime BorrowDate { get; set; }
         public DateTime DueDate { get; set; }
         public DateTime? ReturnDate { get; set; }
-        public int Fine { get; set; } = 0;
+        public decimal Fine { get; set; } = 0m;
 
     }
 }

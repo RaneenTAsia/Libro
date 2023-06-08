@@ -29,10 +29,10 @@ namespace Application.Entities.Books.Handlers
 
 
             var resultList = await _viewBookRepository.GetBooksAsync();
-            _logger.LogInformation($"Select ViewBooks View");
+            _logger.LogDebug($"Select ViewBooks View");
 
             resultList = resultList.Where(r => r.BookStatus == Status.Available).ToList();
-            _logger.LogInformation($"Filter for available books in view result");
+            _logger.LogDebug($"Filter for available books in view result");
 
             var totalResultCount = resultList.Count();
 

@@ -22,7 +22,7 @@ namespace Application.Entities.Books.Handlers
         public async Task<BookDetailsDTO> Handle(GetBookDetailsQuery request, CancellationToken cancellationToken)
         {
             var resultList = await _viewBookRepository.GetBooksAsync();
-            _logger.LogInformation($"Select ViewBooks View");
+            _logger.LogDebug($"Select ViewBooks View");
 
             var bookToReturn = resultList.FirstOrDefault(r => r.BookId == request.BookId);
 

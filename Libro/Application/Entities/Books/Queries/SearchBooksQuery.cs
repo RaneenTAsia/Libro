@@ -15,7 +15,7 @@ namespace Application.Entities.Books.Queries
         public string? Title { get; set; }
         public string? Author { get; set; }
         public int? GenreId { get; set; }
-        public int pageNumber { get; set; } = 1;
-        public int pageSize { get; set; } = 10;
+        public int pageNumber { get; set; } 
+        public int pageSize { get; set; } 
     }
 }

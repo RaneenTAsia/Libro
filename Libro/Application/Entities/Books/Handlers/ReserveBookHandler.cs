@@ -25,6 +25,7 @@ namespace Application.Entities.Books.Handlers
 
         public async Task<(Result,string)> Handle(ReserveBookCommand request, CancellationToken cancellationToken)
         {
+            _logger.LogDebug("Checking if Book {0} exists", request.BookId);
             var isAvailable = await _bookRepository.CheckBookIsAvailableAsync(request.BookId);
 
             if(!isAvailable)
@@ -36,7 +37,8 @@ namespace Application.Entities.Books.Handlers
 
             var reservation = new BookReservation { BookId= request.BookId, UserId = request.UserId, ReserveDate = DateTime.UtcNow };
 
-            var result = await _bookReservationRepository.AddBookReservation(reservation);
+            _logger.LogDebug("Adding Book Reservation {0}", reservation.BookReservationId);
+            var result = await _bookReservationRepository.AddBookReservationAsync(reservation);
 
             if (result == Result.Failed)
             {

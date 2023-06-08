@@ -24,6 +24,7 @@ namespace Presentation.Controllers
         [HttpGet("search")]
         public async Task<ActionResult> SearchBooksAsync(string? title, string? author, int? genre, int pageNumber = 1, int pageSize = 10)
         {
+
             var query = new SearchBooksQuery { Title = title, Author = author, GenreId = genre, pageNumber = pageNumber, pageSize = pageSize };
 
             var request = await _mediator.Send(query);
@@ -48,7 +49,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetBookId(int id)
+        public async Task<ActionResult> GetBookIdAsync(int id)
         {
             var query = new GetBookDetailsQuery { BookId= id };
 
@@ -59,7 +60,7 @@ namespace Presentation.Controllers
 
         [HttpPost("{id}/reserve")]
         [Authorize(Policy = "MustBePatron")]
-        public async Task<ActionResult> ReserveBook(int id)
+        public async Task<ActionResult> ReserveBookAsync(int id)
         {
             var userId = Convert.ToInt32(User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"));
             var command = new ReserveBookCommand { UserId = userId, BookId = id };
@@ -75,11 +76,37 @@ namespace Presentation.Controllers
 
         [HttpPost("checkout")]
         [Authorize(Policy ="MustBeLibrarian")]
-        public async Task<ActionResult> CheckoutBook(CheckoutBookCommand command)
+        public async Task<ActionResult> CheckoutBookAsync(CheckoutBookCommand command)
         {
+            if (command == null)
+                return NotFound();
+
+            if (!ModelState.IsValid || !TryValidateModel(command))
+                return BadRequest(ModelState);
+
             var request = await _mediator.Send(command);
 
             if(request.Item1 == null)
+            {
+                return BadRequest(request.Item2);
+            }
+
+            return Ok(request.Item1);
+        }
+
+        [HttpPost("return")]
+        [Authorize(Policy = "MustBeLibrarian")]
+        public async Task<ActionResult> ReturnBookAsync(ReturnBookCommand command)
+        {
+            if (command == null)
+                return NotFound();
+
+            if (!ModelState.IsValid || !TryValidateModel(command))
+                return BadRequest(ModelState);
+
+            var request = await _mediator.Send(command);
+
+            if (request.Item1 == null)
             {
                 return BadRequest(request.Item2);
             }

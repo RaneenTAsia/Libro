@@ -1,15 +1,7 @@
-﻿using Application.DTOs;
+﻿using Application.Configurations;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.EntityConfigurations
 {
@@ -84,7 +76,7 @@ namespace Infrastructure.Persistence.EntityConfigurations
             ModelBuilder.Entity<BookTransaction>().Property(bt => bt.BorrowDate).IsRequired().HasColumnType("DATE");
             ModelBuilder.Entity<BookTransaction>().Property(bt => bt.DueDate).IsRequired().HasColumnType("DATE");
             ModelBuilder.Entity<BookTransaction>().Property(bt => bt.ReturnDate).HasColumnType("DATE");
-            ModelBuilder.Entity<BookTransaction>().Property(bt => bt.Fine).HasDefaultValue(0);
+            ModelBuilder.Entity<BookTransaction>().Property(bt => bt.Fine).HasDefaultValue(0M).HasColumnType("decimal(18,2)");
             ModelBuilder.Entity<BookTransaction>().Property(bt => bt.BookId).IsRequired();
         }
 

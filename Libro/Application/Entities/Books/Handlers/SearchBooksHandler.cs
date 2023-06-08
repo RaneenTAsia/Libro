@@ -29,16 +29,15 @@ namespace Application.Entities.Books.Handlers
             if (maxPageSize < request.pageSize)
                 request.pageSize = maxPageSize;
 
+            _logger.LogDebug("Get ViewBooks List");
             var resultList = await _viewBookRepository.GetBooksAsync();
-
-            _logger.LogInformation($"Execute SearchAuthorBooks Function with value {request.Author}");
 
             if (request.Author != null)
             {
                 var authorList = _viewBookRepository.GetBooksWithAuthor(request.Author);
                 resultList = resultList.Where(r => authorList.Any(l => l.BookId == r.BookId)).ToList();
 
-                _logger.LogInformation($"Search ViewBooks for author value {request.Author}");
+                _logger.LogDebug("Filter ViewBooks for author value {0}", request.Author);
             }
 
             if (request.Title != null)
@@ -46,7 +45,7 @@ namespace Application.Entities.Books.Handlers
                 var titleList = _viewBookRepository.GetBooksWithTitle(request.Title);
                 resultList = resultList.Where(r => titleList.Any(l => l.BookId == r.BookId)).ToList(); ;
 
-                _logger.LogInformation($"Search ViewBooks for title value {request.Title}");
+                _logger.LogDebug("Filter ViewBooks for title value {0}", request.Title);
             }
 
             if (request.GenreId != null)
@@ -55,7 +54,7 @@ namespace Application.Entities.Books.Handlers
                 var list = _bookToGenreRepository.GetBookIdsByGenreId((int)request.GenreId);
                 resultList = resultList.Where(r => list.Any(l => l.BookId == r.BookId)).ToList();
 
-                _logger.LogInformation($"Search SearchAuthorBooks Function result for GenreId {request.GenreId}");
+                _logger.LogDebug("Filter ViewBooks for GenreId {0}", request.GenreId);
             }
 
             var totalResultCount = resultList.Count();

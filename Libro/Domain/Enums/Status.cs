@@ -10,7 +10,6 @@ namespace Domain.Enums
     {
         Available = 1,
         Reserved,
-        Borrowed,
-        Overdue
+        Borrowed
     }
 }

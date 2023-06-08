@@ -41,6 +41,9 @@ namespace Presentation.Controllers
             if (userToLogin == null)
                 return NotFound();
 
+            if (!ModelState.IsValid || !TryValidateModel(userToLogin))
+                return BadRequest(ModelState);
+
             var result = await _mediator.Send(userToLogin);
 
             if (result.Item2 == Result.Failed)

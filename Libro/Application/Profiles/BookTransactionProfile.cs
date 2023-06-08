@@ -14,6 +14,7 @@ namespace Application.Profiles
         public BookTransactionProfile()
         {
             CreateMap<BookTransaction, TransactionToReturnForCheckoutDTO>();
+            CreateMap<BookTransaction, TransactionToReturnForBookReturnDTO>();
         }
     }
 }

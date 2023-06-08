@@ -10,19 +10,22 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog();
+//builder.Host.UseSerilog();
 
-//var logger = new LoggerConfiguration()
-//        .ReadFrom.Configuration(builder.Configuration)
-//        .Enrich.FromLogContext()
-//        .CreateLogger();
-//builder.Logging.ClearProviders();
-//builder.Logging.AddSerilog(logger);
+var logger = new LoggerConfiguration()
+        .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+        .ReadFrom.Configuration(builder.Configuration)
+        .Enrich.FromLogContext()
+        .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 // Add services to the container.
 

@@ -21,7 +21,7 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Result> AddBookReservation(BookReservation bookReservation)
+        public async Task<Result> AddBookReservationAsync(BookReservation bookReservation)
         {
             _context.BookReservations.Add(bookReservation);
 
@@ -40,7 +40,7 @@ namespace Infrastructure.Repositories
             return await _context.BookReservations.AnyAsync(br => br.UserId == userId && br.BookId == bookId);
         }
 
-        public async Task<Result> DeleteBookReservation(BookReservation reservation)
+        public async Task<Result> DeleteBookReservationAsync(BookReservation reservation)
         {
             var deleted = _context.BookReservations.Remove(reservation);
             await _context.SaveChangesAsync();

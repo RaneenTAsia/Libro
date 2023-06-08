@@ -7,6 +7,7 @@ namespace Domain.Repositories
     {
         Task<(BookTransaction, Result)> AddBookTransactionAsync(BookTransaction transaction);
         Task<bool> BookTransactionExistsByIdAsync(int transactionId);
-        Task<int> BookTransactionCountOfUserById(int userId);
+        Task<int> BookTransactionCurrentCountOfUserByIdAsync(int userId);
+        Task<BookTransaction?> OngoingBookTransationByBookIdAsync(int bookId);
     }
 }

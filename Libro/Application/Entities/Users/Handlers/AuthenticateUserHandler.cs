@@ -26,16 +26,19 @@ namespace Application.Entities.Users.Handlers
 
         public async Task<(string, Result)> Handle(AuthenticateUserQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"User attempts logging in with email {request.Email}, and password {request.Password}");
+            _logger.LogDebug("User attempts logging in with email {0}", request.Email);
 
-            var (user, result) = await _userRepository.ValidateUserCredentials(request.Email, request.Password);
+            var (user, result) = await _userRepository.ValidateUserCredentialsAsync(request.Email, request.Password);
 
             if (result == Result.Failed)
             {
+                _logger.LogDebug("Incorrect email or password");
                 return ("Incorrect email or password", Result.Failed);
             }
 
-            _logger.LogInformation($"Login success");
+            _logger.LogDebug($"Login success");
+
+            _logger.LogDebug("Creating token for user with email {0}", user.Email);
 
             // Step 2: create a token
             var securityKey = new SymmetricSecurityKey(
@@ -62,6 +65,7 @@ namespace Application.Entities.Users.Handlers
             var tokenToReturn = new JwtSecurityTokenHandler()
                .WriteToken(jwtSecurityToken);
 
+            _logger.LogDebug($"returning token");
             return (tokenToReturn, Result.Completed);
         }
     }

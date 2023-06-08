@@ -25,6 +25,9 @@ namespace Presentation.Controllers
             if (role == null)
                 return BadRequest();
 
+            if (!ModelState.IsValid || !TryValidateModel(role))
+                return BadRequest(ModelState);
+
             var request = new ChangeUserRoleCommand { Role = role.Role, UserId = userId };
 
             var result = await _mediator.Send(request);

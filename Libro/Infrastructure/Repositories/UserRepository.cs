@@ -1,4 +1,5 @@
-﻿using AutoDependencyRegistration.Attributes;
+﻿using Application.Configurations;
+using AutoDependencyRegistration.Attributes;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
@@ -39,7 +40,7 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<(User?, Result)> ValidateUserCredentials(string? email, string? Password)
+        public async Task<(User?, Result)> ValidateUserCredentialsAsync(string? email, string? Password)
         {
             var context = _context.Users.AsNoTracking();
             var user = await context.FirstOrDefaultAsync(u => u.Email == email);
