@@ -2,6 +2,7 @@
 using Infrastructure.Persistence.EntityConfigurations;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,7 @@ namespace Infrastructure
         public string BookGenresFunctionResult (int bookId) => throw new NotSupportedException();
         public DbSet<ViewBooks> ViewBooks { get; set; }
         public DbSet<ViewOverdueBookDetails> ViewOverdueBooksDetails { get; set; }
+        public IQueryable<UserBorrowingHistoryFunctionResult> UserBorrowingHistoryFunctionResults(int UserId) => FromExpression(expression: () => UserBorrowingHistoryFunctionResults(UserId));
 
         public LibroDbContext()
         {
@@ -54,10 +56,13 @@ namespace Infrastructure
             creator.SeedTables();
 
             modelBuilder.HasDbFunction(typeof(LibroDbContext).GetMethod(nameof(BookGenresFunctionResult), new[] { typeof(int) }))
-                .HasName("BookGenres");
+                .HasName("fnBookGenres");
 
             modelBuilder.HasDbFunction(typeof(LibroDbContext).GetMethod(nameof(BookAuthorsFunctionResult), new[] { typeof(int) }))
-                 .HasName("BookAuthors");
+                 .HasName("fnBookAuthors");
+
+            modelBuilder.HasDbFunction(typeof(LibroDbContext).GetMethod(nameof(UserBorrowingHistoryFunctionResults), new[] { typeof(int) }))
+                .HasName("fnUserBorrowingHistory");
 
             creator.MapViews();
         }

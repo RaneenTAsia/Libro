@@ -48,9 +48,9 @@ namespace Infrastructure.Repositories
             if (user == null)
                 return (user, Result.Failed);
 
-            var result = PasswordHasher.VerifyPassword(Password, user.PasswordSalt, 3, user.PasswordHash);
+            var IsVerifiedPassword = PasswordHasher.VerifyPassword(Password, user.PasswordSalt, 3, user.PasswordHash);
 
-            if (result)
+            if (IsVerifiedPassword)
                 return (user, Result.Completed);
 
             return (user, Result.Failed);
@@ -64,6 +64,11 @@ namespace Infrastructure.Repositories
         public async Task<User?> GetUserByIdAsync(int id)
         {
             return await _context.Users.FindAsync(id);
+        }
+
+        public async Task<bool> UserExistsByIdAsync(int userId)
+        {
+            return await _context.Users.AnyAsync(u =>u.UserId == userId);
         }
     }
 }

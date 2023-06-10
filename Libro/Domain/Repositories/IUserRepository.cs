@@ -10,5 +10,6 @@ namespace Domain.Repositories
         Task<(User?, Result)> ValidateUserCredentialsAsync(string? email, string? Password);
         Task SaveChangesAsync();
         Task<User?> GetUserByIdAsync(int id);
+        Task<bool> UserExistsByIdAsync(int userId);
     }
 }
