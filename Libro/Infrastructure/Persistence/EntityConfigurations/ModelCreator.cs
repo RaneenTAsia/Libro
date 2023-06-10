@@ -249,7 +249,8 @@ namespace Infrastructure.Persistence.EntityConfigurations
 
         public void MapViews()
         {
-            ModelBuilder.Entity<ViewBooks>().HasNoKey().ToView("viewBooks");
+            ModelBuilder.Entity<ViewBooks>().HasNoKey().ToView("ViewBooks");
+            ModelBuilder.Entity<ViewOverdueBookDetails>().HasNoKey().ToView("ViewOverdueBooksDetails");
         }
     }
 }

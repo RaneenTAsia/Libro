@@ -25,6 +25,7 @@ namespace Infrastructure
         public string BookAuthorsFunctionResult(int bookId) => throw new NotSupportedException();
         public string BookGenresFunctionResult (int bookId) => throw new NotSupportedException();
         public DbSet<ViewBooks> ViewBooks { get; set; }
+        public DbSet<ViewOverdueBookDetails> ViewOverdueBooksDetails { get; set; }
 
         public LibroDbContext()
         {

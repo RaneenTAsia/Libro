@@ -27,12 +27,12 @@ namespace Presentation.Controllers
 
             var query = new SearchBooksQuery { Title = title, Author = author, GenreId = genre, pageNumber = pageNumber, pageSize = pageSize };
 
-            var request = await _mediator.Send(query);
+            var result = await _mediator.Send(query);
 
             Response.Headers.Add("X-Pagination",
-                JsonSerializer.Serialize(request.Item2));
+                JsonSerializer.Serialize(result.Item2));
 
-            return Ok(request.Item1);
+            return Ok(result.Item1);
         }
 
         [HttpGet("browse")]
@@ -40,12 +40,12 @@ namespace Presentation.Controllers
         {
             var query = new BrowseAvailableBooksQuery {  pageNumber = pageNumber, pageSize = pageSize };
 
-            var request = await _mediator.Send(query);
+            var result = await _mediator.Send(query);
 
             Response.Headers.Add("X-Pagination",
-                JsonSerializer.Serialize(request.Item2));
+                JsonSerializer.Serialize(result.Item2));
 
-            return Ok(request.Item1);
+            return Ok(result.Item1);
         }
 
         [HttpGet("{id}")]
@@ -53,9 +53,9 @@ namespace Presentation.Controllers
         {
             var query = new GetBookDetailsQuery { BookId= id };
 
-            var request = await _mediator.Send(query);
+            var result = await _mediator.Send(query);
 
-            return Ok(request);
+            return Ok(result);
         }
 
         [HttpPost("{id}/reserve")]
@@ -64,14 +64,14 @@ namespace Presentation.Controllers
         {
             var userId = Convert.ToInt32(User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"));
             var command = new ReserveBookCommand { UserId = userId, BookId = id };
-            var request = await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-            if(request.Item1 == Domain.Enums.Result.Failed)
+            if(result.Item1 == Domain.Enums.Result.Failed)
             {
-                return BadRequest(request.Item2);
+                return BadRequest(result.Item2);
             }
 
-            return Ok(request.Item2);
+            return Ok(result.Item2);
         }
 
         [HttpPost("checkout")]
@@ -84,14 +84,14 @@ namespace Presentation.Controllers
             if (!ModelState.IsValid || !TryValidateModel(command))
                 return BadRequest(ModelState);
 
-            var request = await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-            if(request.Item1 == null)
+            if(result.Item1 == null)
             {
-                return BadRequest(request.Item2);
+                return BadRequest(result.Item2);
             }
 
-            return Ok(request.Item1);
+            return Ok(result.Item1);
         }
 
         [HttpPost("return")]
@@ -104,14 +104,34 @@ namespace Presentation.Controllers
             if (!ModelState.IsValid || !TryValidateModel(command))
                 return BadRequest(ModelState);
 
-            var request = await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-            if (request.Item1 == null)
+            if (result.Item1 == null)
             {
-                return BadRequest(request.Item2);
+                return BadRequest(result.Item2);
             }
 
-            return Ok(request.Item1);
+            return Ok(result.Item1);
+        }
+
+        [HttpGet("overdue")]
+        [Authorize(Policy = "MustBeLibrarian")]
+        public async Task<ActionResult> GetOverdueBookAsync(int pageNumber = 1, int pageSize = 10)
+        {
+            var request = new TrackOverdueBooksQuery { pageNumber = pageNumber, pageSize = pageSize };
+
+            var result = await _mediator.Send(request);
+
+            if (result.Count < 0)
+            {
+                return BadRequest();
+            }
+            else if(result.Count == 0)
+            {
+                return Ok("There are no Overdue Books");
+            }
+
+            return Ok(result);
         }
     }
 }

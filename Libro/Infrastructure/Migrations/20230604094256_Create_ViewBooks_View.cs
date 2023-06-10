@@ -27,7 +27,7 @@ namespace Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(@"DROP VIEW viewBooks");
+            migrationBuilder.Sql(@"DROP VIEW ViewBooks");
         }
     }
 }
