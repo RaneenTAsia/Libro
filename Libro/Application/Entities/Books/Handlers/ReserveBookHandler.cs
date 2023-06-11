@@ -26,6 +26,12 @@ namespace Application.Entities.Books.Handlers
         public async Task<(Result,string)> Handle(ReserveBookCommand request, CancellationToken cancellationToken)
         {
             _logger.LogDebug("Checking if Book {0} exists", request.BookId);
+
+            if(!(await _bookRepository.BookExistsAsync(request.UserId)))
+            {
+                return (Result.Failed, "Book Does Not Exist");
+            }
+
             var isAvailable = await _bookRepository.CheckBookIsAvailableAsync(request.BookId);
 
             if(!isAvailable)

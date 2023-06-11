@@ -5,6 +5,7 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Application.Entities.Books.Handlers
 {
-    public class ReturnBookHandler : IRequestHandler<ReturnBookCommand, (TransactionToReturnForBookReturnDTO?, string)>
+    public class ReturnBookHandler : IRequestHandler<ReturnBookCommand, ActionResult>
     {
         public readonly IBookRepository _bookRepository;
         public readonly IBookTransactionRepository _bookTransactionRepository;
@@ -30,28 +31,28 @@ namespace Application.Entities.Books.Handlers
             _mapper = mapper;
         }
 
-        public async Task<(TransactionToReturnForBookReturnDTO?, string)> Handle(ReturnBookCommand request, CancellationToken cancellationToken)
+        public async Task<ActionResult> Handle(ReturnBookCommand request, CancellationToken cancellationToken)
         {
             _logger.LogDebug("Checking if Book {0} exists", request.BookId);
 
             var bookToReturn = await _bookRepository.GetBookByIdAsync(request.BookId);
             if (bookToReturn == null)
             {
-                return (null, "Book Doesnt Exist");
+                return new NotFoundObjectResult( "Book Doesnt Exist");
             }
 
             _logger.LogDebug("Checking if Book {0} was ever checked out", request.BookId);
 
             if (IsAvailableOrReserved(bookToReturn))
             {
-                return (null, "Book was never checked out");
+                return new NotFoundObjectResult("Book was never checked out");
             }
 
             var bookTransaction = await _bookTransactionRepository.OngoingBookTransationByBookIdAsync(bookToReturn.BookId);
 
             if(bookTransaction == null)
             {
-                return (null, "database flawed");
+                return new ConflictObjectResult("database flawed");
             }
 
             _logger.LogDebug(" BookTransaction {0} return date before update is {1}", bookTransaction.BookTransactionId, bookTransaction.ReturnDate);
@@ -71,10 +72,10 @@ namespace Application.Entities.Books.Handlers
 
             if (!IsAvailableOrReserved(bookToReturn))
             {
-                return (null, "Book status could not be changed");
+                return new ConflictObjectResult("Book status could not be changed");
             }
 
-            return (_mapper.Map<TransactionToReturnForBookReturnDTO>(bookTransaction), "successfully returned");
+            return new OkObjectResult( _mapper.Map<TransactionToReturnForBookReturnDTO>(bookTransaction));
         }
         public bool IsAvailableOrReserved(Book book)
         {

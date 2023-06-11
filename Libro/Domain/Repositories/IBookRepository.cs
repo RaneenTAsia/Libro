@@ -9,6 +9,7 @@ namespace Domain.Repositories
         Task<Result> SetBookAsReservedAsync(int bookId);
         Task<bool> CheckBookIsAvailableAsync(int id);
         Task<Status> GetBookStatusByIdAsync(int bookId);
+        Task<bool> BookExistsAsync(int bookId);
         Task SaveChangesAsync();
 
     }

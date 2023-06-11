@@ -1,5 +1,7 @@
-﻿using Domain.Entities;
+﻿using Application.Configurations;
+using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Application.Entities.Users.Queries
 {
-    public class GetUserHistoryQuery : IRequest<(List<UserBorrowingHistoryFunctionResult>, string)>
+    public class GetUserHistoryQuery : IRequest<(ActionResult, PaginationMetadata)>
     {
         public int UserId { get; set; }
         public int pageNumber { get; set; }

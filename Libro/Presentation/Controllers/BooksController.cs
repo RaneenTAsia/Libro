@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Entities.Books.Commands;
 using Application.Entities.Books.Queries;
+using Azure.Core;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -86,12 +87,7 @@ namespace Presentation.Controllers
 
             var result = await _mediator.Send(command);
 
-            if(result.Item1 == null)
-            {
-                return BadRequest(result.Item2);
-            }
-
-            return Ok(result.Item1);
+            return result;
         }
 
         [HttpPost("return")]
@@ -106,12 +102,7 @@ namespace Presentation.Controllers
 
             var result = await _mediator.Send(command);
 
-            if (result.Item1 == null)
-            {
-                return BadRequest(result.Item2);
-            }
-
-            return Ok(result.Item1);
+            return result;
         }
 
         [HttpGet("overdue")]
@@ -122,16 +113,19 @@ namespace Presentation.Controllers
 
             var result = await _mediator.Send(request);
 
-            if (result.Count < 0)
+            if (result.Item1.Count < 0)
             {
                 return BadRequest();
             }
-            else if(result.Count == 0)
+            else if(result.Item1.Count == 0)
             {
                 return Ok("There are no Overdue Books");
             }
 
-            return Ok(result);
+            Response.Headers.Add("X-Pagination",
+               JsonSerializer.Serialize(result.Item2));
+
+            return Ok(result.Item1);
         }
     }
 }

@@ -5,6 +5,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Application.Entities.Users.Handlers
 {
-    public class GetUserHistoryHandler : IRequestHandler<GetUserHistoryQuery, (List<UserBorrowingHistoryFunctionResult>, string)>
+    public class GetUserHistoryHandler : IRequestHandler<GetUserHistoryQuery, (ActionResult, PaginationMetadata)>
     {
         public readonly IUserRepository _userRepository;
         public readonly IUserBorrowingHistoryFunctionRepository _userBorrowingHistoryRepository;
@@ -27,7 +28,7 @@ namespace Application.Entities.Users.Handlers
             _userBorrowingHistoryRepository = userBorrowingHistoryRepository;
             _logger = logger;
         }
-        public async Task<(List<UserBorrowingHistoryFunctionResult>, string)> Handle(GetUserHistoryQuery request, CancellationToken cancellationToken)
+        public async Task<(ActionResult, PaginationMetadata)> Handle(GetUserHistoryQuery request, CancellationToken cancellationToken)
         {
             if (maxPageSize < request.pageSize)
                 request.pageSize = maxPageSize;
@@ -37,7 +38,7 @@ namespace Application.Entities.Users.Handlers
 
             if (!userExists)
             {
-                return (null, "User does not exists");
+                return (new NotFoundObjectResult( "User does not exists"),null);
             }
 
             _logger.LogDebug("Retrieve borrowing history of User with Id {0})", request.UserId);
@@ -49,7 +50,7 @@ namespace Application.Entities.Users.Handlers
 
             var resultToReturn = historyList.OrderBy(r => r.BookId).Skip(paginationMetadata.PageSize * (paginationMetadata.CurrentPage - 1)).Take(paginationMetadata.PageSize).ToList();
 
-            return (resultToReturn, "");
+            return (new OkObjectResult(resultToReturn), paginationMetadata);
         }
     }
 }

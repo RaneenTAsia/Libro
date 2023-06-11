@@ -5,11 +5,12 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Entities.Books.Handlers
 {
-    public class CheckoutBookHandler : IRequestHandler<CheckoutBookCommand, (TransactionToReturnForCheckoutDTO?, string)>
+    public class CheckoutBookHandler : IRequestHandler<CheckoutBookCommand, ActionResult>
     {
         public readonly IBookRepository _bookRepository;
         public readonly IBookReservationRepository _bookReservationRepository;
@@ -26,24 +27,24 @@ namespace Application.Entities.Books.Handlers
             _mapper = mapper;
         }
 
-        public async Task<(TransactionToReturnForCheckoutDTO?, string)> Handle(CheckoutBookCommand request, CancellationToken cancellationToken)
+        public async Task<ActionResult> Handle(CheckoutBookCommand request, CancellationToken cancellationToken)
         {
             var count = await _bookTransactionRepository.BookTransactionCurrentCountOfUserByIdAsync(request.UserId);
             if (count >= 5)
             {
-                return (null, "Already have maximum amount of books checked out");
+                return new BadRequestObjectResult( "Already have maximum amount of books checked out");
             }
 
             _logger.LogDebug("Checking if Book {0} exists", request.BookId);
             var bookToCheckout = await _bookRepository.GetBookByIdAsync(request.BookId);
             if (bookToCheckout == null)
             {
-                return (null, "Book Doesnt Exist");
+                return new NotFoundObjectResult("Book Doesnt Exist");
             }
 
             if (!IsAvailableOrReserved(bookToCheckout))
             {
-                return (null, "Book Not Available for checkout");
+                return new BadRequestObjectResult( "Book Not Available for checkout");
             }
 
             _logger.LogDebug("Checking if Book {0} Is reserved by User {1} exists", request.BookId, request.UserId);
@@ -53,11 +54,11 @@ namespace Application.Entities.Books.Handlers
 
                 if (bookReservation == null)
                 {
-                    return (null, "Book is reserved by someone else");
+                    return new BadRequestObjectResult( "Book is reserved by someone else");
                 }
                 var deletionResult = await _bookReservationRepository.DeleteBookReservationAsync(bookReservation);
                 if (deletionResult == Result.Failed)
-                    return (null, "Could not delete reservation");
+                    return new ConflictObjectResult("Could not delete reservation");
             }
 
             BookTransaction transaction;
@@ -78,7 +79,7 @@ namespace Application.Entities.Books.Handlers
 
             if (result == Result.Failed)
             {
-                return (null, "Could not add transaction");
+                return new ConflictObjectResult("Could not add transaction");
             }
 
             bookToCheckout.BookStatus = (int)Status.Borrowed;
@@ -86,10 +87,10 @@ namespace Application.Entities.Books.Handlers
 
             if (IsAvailableOrReserved(bookToCheckout))
             {
-                return (null, "Book status could not be changed");
+                return new ConflictObjectResult("Book status could not be changed");
             }
 
-            return (_mapper.Map<TransactionToReturnForCheckoutDTO>(transactionReturned), "successfully returned");
+            return new OkObjectResult( _mapper.Map<TransactionToReturnForCheckoutDTO>(transactionReturned));
         }
         public bool IsAvailableOrReserved(Book book)
         {

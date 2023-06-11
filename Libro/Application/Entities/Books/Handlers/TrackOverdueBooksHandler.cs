@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.Entities.Books.Handlers
 {
-    public class TrackOverdueBooksHandler : IRequestHandler<TrackOverdueBooksQuery, List<ViewOverdueBookDetails>>
+    public class TrackOverdueBooksHandler : IRequestHandler<TrackOverdueBooksQuery, (List<ViewOverdueBookDetails>, PaginationMetadata)>
     {
         public readonly IViewOverdueBooksDetailsRepository _viewOverdueBooksDetailsRepository;
         public readonly ILogger<TrackOverdueBooksHandler> _logger;
@@ -19,7 +19,7 @@ namespace Application.Entities.Books.Handlers
             _viewOverdueBooksDetailsRepository = viewOverdueBooksDetailsRepository;
         }
 
-        public async Task<List<ViewOverdueBookDetails>> Handle(TrackOverdueBooksQuery request, CancellationToken cancellationToken)
+        public async Task<(List<ViewOverdueBookDetails>, PaginationMetadata)> Handle(TrackOverdueBooksQuery request, CancellationToken cancellationToken)
         {
             if (maxPageSize < request.pageSize)
                 request.pageSize = maxPageSize;
@@ -33,7 +33,7 @@ namespace Application.Entities.Books.Handlers
 
             var resultToReturn = overdueBooks.OrderBy(r => r.BookId).Skip(paginationMetadata.PageSize * (paginationMetadata.CurrentPage - 1)).Take(paginationMetadata.PageSize).ToList();
 
-            return resultToReturn;
+            return (resultToReturn,paginationMetadata);
         }
 
     }

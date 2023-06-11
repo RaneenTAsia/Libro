@@ -3,6 +3,7 @@ using Application.Entities.Users.Queries;
 using AutoMapper;
 using Domain.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Application.Entities.Users.Handlers
 {
-    public class GetUserHandler : IRequestHandler<GetUserQuery, (UserDTO, string)>
+    public class GetUserHandler : IRequestHandler<GetUserQuery, ActionResult>
     {
         public readonly IUserRepository _userRepository;
         public readonly IMapper _mapper;
@@ -25,17 +26,17 @@ namespace Application.Entities.Users.Handlers
             _logger = logger;
         }
 
-        public async Task<(UserDTO, string)> Handle(GetUserQuery request, CancellationToken cancellationToken)
+        public async Task<ActionResult> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
             _logger.LogDebug("Get User with Id {0}", request.UserId);
             var user = await _userRepository.GetUserByIdAsync(request.UserId);
 
             if(user == null)
             {
-                return (null, "User does not exist");
+                return new NotFoundObjectResult("User does not exist");
             }
 
-            return (_mapper.Map<UserDTO>(user), "Successfully Retrieved User");
+            return new OkObjectResult(_mapper.Map<UserDTO>(user));
         }
     }
 }
