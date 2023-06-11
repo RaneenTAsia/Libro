@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Entities.Books.Commands
 {
-    public class ReturnBookCommand : IRequest<(TransactionToReturnForBookReturnDTO, string)>
+    public class ReturnBookCommand : IRequest<(TransactionToReturnForBookReturnDTO?, string)>
     {
         public int BookId { get; set; }
     }

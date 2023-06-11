@@ -27,7 +27,6 @@ namespace Application.Entities.Users.Handlers
             _userBorrowingHistoryRepository = userBorrowingHistoryRepository;
             _logger = logger;
         }
-
         public async Task<(List<UserBorrowingHistoryFunctionResult>, string)> Handle(GetUserHistoryQuery request, CancellationToken cancellationToken)
         {
             if (maxPageSize < request.pageSize)

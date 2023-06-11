@@ -67,7 +67,7 @@ namespace Infrastructure.Persistence.EntityConfigurations
             ModelBuilder.Entity<User>().Property(u => u.Email).IsRequired().HasMaxLength(50);
             ModelBuilder.Entity<User>().Property(u => u.PasswordSalt).IsRequired();
             ModelBuilder.Entity<User>().Property(u => u.PasswordHash).IsRequired();
-            ModelBuilder.Entity<User>().HasAlternateKey(u => u.Email);
+            ModelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
         }
 
         public void ConfigureBookTransactionFluentValidations()

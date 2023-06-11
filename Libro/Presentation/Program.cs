@@ -71,7 +71,7 @@ builder.Services.AddAuthentication("Bearer")
 
         options.TokenValidationParameters = new()
         {
-            ValidateLifetime= true,
+            ValidateLifetime = true,
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
@@ -88,13 +88,13 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("MustBeAdministrator", policy =>
     {
         policy.RequireAuthenticatedUser();
-        policy.RequireRole( "Administrator");
+        policy.RequireRole("Administrator");
     });
 
     options.AddPolicy("MustBeLibrarian", policy =>
     {
         policy.RequireAuthenticatedUser();
-        policy.RequireRole( "Librarian");
+        policy.RequireRole("Librarian");
     });
 
     options.AddPolicy("MustBePatron", policy =>

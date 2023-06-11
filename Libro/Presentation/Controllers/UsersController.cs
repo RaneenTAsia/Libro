@@ -1,10 +1,14 @@
 ﻿using Application.DTOs;
 using Application.Entities.Users.Commands;
 using Application.Entities.Users.Queries;
+using AutoMapper;
+using Domain.Entities;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace Presentation.Controllers
@@ -69,7 +73,7 @@ namespace Presentation.Controllers
         public async Task<ActionResult> GetUserBorrowingHistory(int userId, int pageNumber = 1, int pageSize = 10)
         {
             var tokenUserId = Convert.ToInt32(User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"));
-            var tokenUserRole =User.FindFirstValue("http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
+            var tokenUserRole = User.FindFirstValue("http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
 
             if (tokenUserId != userId && tokenUserRole.Equals(Role.Patron.ToString()))
                 return Unauthorized();
@@ -84,6 +88,25 @@ namespace Presentation.Controllers
             }
 
             return Ok(result.Item1);
+        }
+
+        [Authorize]
+        [HttpPut("{userId}/update")]
+        public async Task<ActionResult> UpdateUserEmail(int userId, ProfileToUpdateDTO profile)
+        {
+            if (!ModelState.IsValid  || !TryValidateModel(profile))
+            {
+                return BadRequest(ModelState);
+            }
+
+            var tokenUserId = Convert.ToInt32(User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"));
+            var tokenUserRole = User.FindFirstValue("http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
+
+            var request = new UpdateUserProfileCommand { UserId = userId, Profile = profile, TokenUserId = tokenUserId, TokenUserRole = tokenUserRole };
+
+            var result = await _mediator.Send(request);
+
+            return result;
         }
     }
 }
