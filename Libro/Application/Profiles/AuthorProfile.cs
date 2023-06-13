@@ -1,4 +1,5 @@
-﻿using Application.Entities.Authors.Commands;
+﻿using Application.DTOs;
+using Application.Entities.Authors.Commands;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -14,6 +15,8 @@ namespace Application.Profiles
         public AuthorProfile()
         {
             CreateMap<AddAuthorCommand, Author>();
+            CreateMap<AuthorRetrievalDTO, AuthorUpdateDTO>();
+            CreateMap<AuthorUpdateDTO, Author>();
         }
     }
 }

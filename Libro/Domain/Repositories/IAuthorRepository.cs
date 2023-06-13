@@ -8,5 +8,7 @@ namespace Domain.Repositories
         Task<List<Author>> GetAuthorsByIdsAsync(List<int> authorIds);
         Task<bool> AuthorExistsAsync(int authorId);
         Task<Result> AddAuthorAsync(Author author);
+        Task<Author?> GetAuthorByIdAsync(int authorId);
+        Task SaveChangesAsync();
     }
 }

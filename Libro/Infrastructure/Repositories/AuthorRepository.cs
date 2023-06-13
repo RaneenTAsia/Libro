@@ -52,5 +52,15 @@ namespace Infrastructure.Repositories
 
             return Result.Failed;
         }
+
+        public async Task<Author?> GetAuthorByIdAsync(int authorId)
+        {
+            return await _context.Authors.Include(a => a.WrittenBooks).FirstOrDefaultAsync(a => a.AuthorId == authorId);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

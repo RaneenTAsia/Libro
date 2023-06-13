@@ -16,7 +16,6 @@ namespace Application.Profiles
             CreateMap<User, UserDTO>();
             CreateMap<UserDTO, User>();
             CreateMap<UserDTO, ProfileToUpdateDTO>().ReverseMap();
-            CreateMap<User, ProfileToUpdateDTO>().ReverseMap();
         }
 
     }
