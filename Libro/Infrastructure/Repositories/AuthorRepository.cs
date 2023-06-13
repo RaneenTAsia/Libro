@@ -1,5 +1,6 @@
 ﻿using AutoDependencyRegistration.Attributes;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -26,16 +27,30 @@ namespace Infrastructure.Repositories
 
             for (int i = 0; i < authorIds.Count; i++)
             {
-                if (await BookAuthorExists(authorIds[i]))
+                if (await AuthorExistsAsync(authorIds[i]))
                     authors.Add(await _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == authorIds[i]));
             }
 
             return authors;
         }
 
-        public async Task<bool> BookAuthorExists(int authorId)
+        public async Task<bool> AuthorExistsAsync(int authorId)
         {
             return await _context.Authors.AnyAsync(a => a.AuthorId == authorId);
+        }
+        
+        public async Task<Result> AddAuthorAsync(Author author)
+        {
+            await _context.Authors.AddAsync(author);
+
+            await _context.SaveChangesAsync();
+
+            if (await _context.Authors.AnyAsync(br => br.AuthorId == author.AuthorId))
+            {
+                return Result.Completed;
+            }
+
+            return Result.Failed;
         }
     }
 }

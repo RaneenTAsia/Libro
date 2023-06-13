@@ -61,7 +61,7 @@ namespace Infrastructure.Repositories
 
         public async Task<Result> AddBookAsync(Book book)
         {
-            _context.Books.Add(book);
+            await _context.Books.AddAsync(book);
 
             await _context.SaveChangesAsync();
 
@@ -92,6 +92,19 @@ namespace Infrastructure.Repositories
             }
 
             return Result.Completed;
+        }
+
+        public async Task<List<Book>> GetBooksByIdsAsync(List<int> bookIds)
+        {
+            List<Book> books = new List<Book>();
+
+            for (int i = 0; i < bookIds.Count; i++)
+            {
+                if (await BookExistsAsync(bookIds[i]))
+                    books.Add(await _context.Books.FirstOrDefaultAsync(b => b.BookId == bookIds[i]));
+            }
+
+            return books;
         }
     }
 }

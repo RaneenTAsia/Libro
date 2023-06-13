@@ -13,6 +13,7 @@ namespace Domain.Repositories
         Task SaveChangesAsync();
         Task<Result> AddBookAsync(Book book);
         Task<Result> DeleteBookAsync(int bookId);
+        Task<List<Book>> GetBooksByIdsAsync(List<int> bookIds);
 
     }
 }

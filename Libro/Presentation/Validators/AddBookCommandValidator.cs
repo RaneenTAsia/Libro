@@ -25,11 +25,11 @@ namespace Presentation.Validators
                 .Must(e => e < DateTime.UtcNow).WithMessage("Publish date cannot be for later than today");
 
             RuleFor(e => e.BookAuthors)
-                .NotEmpty().WithMessage("Must have an bookAuthorS List")
+                .NotEmpty().WithMessage("Must have an bookAuthors List")
                 .Must(e => e.Count > 0).WithMessage("Book must have at least 1 author");
 
             RuleFor(e => e.Genres)
-                .NotEmpty().WithMessage("Must have a genreS list")
+                .NotEmpty().WithMessage("Must have a genres list")
                 .Must(e => e.Count > 0).WithMessage("Book must have at least 1 Genre");
         }
     }
