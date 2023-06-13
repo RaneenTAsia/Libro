@@ -17,6 +17,8 @@ namespace Application.Profiles
             CreateMap<ViewBooks, BrowsingBookDTO>();
             CreateMap<ViewBooks, BookDetailsDTO>();
             CreateMap<AddBookCommand, Book>();
+            CreateMap<BookRetrievalDTO, BookUpdateDTO>();
+            CreateMap<Book, BookUpdateDTO>().ReverseMap();
         }
     }
 }

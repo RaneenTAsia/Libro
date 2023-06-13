@@ -18,7 +18,7 @@ namespace Infrastructure.Repositories
 
         public async Task<Book?> GetBookByIdAsync(int id)
         {
-            return await _context.Books.FindAsync(id);
+            return await _context.Books.Include(b => b.BookGenres).Include(b => b.Authors).FirstOrDefaultAsync(b =>b.BookId == id);
         }
 
         public async Task<Result> SetBookAsReservedAsync(int bookId)

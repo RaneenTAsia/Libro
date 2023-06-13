@@ -147,5 +147,22 @@ namespace Presentation.Controllers
 
             return Ok(result.Item2);
         }
+
+        [HttpPut("{bookId}")]
+        [Authorize(Roles = "Administrator,Librarian")]
+        public async Task<ActionResult> UpdateBook(int bookId, BookRetrievalDTO bookDTO)
+        {
+            var command = new UpdateBookCommand() { BookId= bookId, RetrievedBookDTO = bookDTO};
+
+            if (command == null)
+                return NotFound();
+
+            if (!ModelState.IsValid || !TryValidateModel(command))
+                return BadRequest(ModelState);
+
+            var result = await _mediator.Send(command);
+
+            return result;
+        }
     }
 }
