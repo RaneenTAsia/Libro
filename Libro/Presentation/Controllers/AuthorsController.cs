@@ -55,5 +55,19 @@ namespace Presentation.Controllers
 
             return result;
         }
+
+        [HttpDelete("{authorId}")]
+        [Authorize(Roles = "Administrator,Librarian")]
+        public async Task<ActionResult> DeleteAuthor(int authorId)
+        {
+            var command = new DeleteAuthorCommand() { AuthorId = authorId };
+
+            if (command == null)
+                return NotFound();
+
+            var result = await _mediator.Send(command);
+
+            return result;
+        }
     }
 }

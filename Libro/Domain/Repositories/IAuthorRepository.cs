@@ -10,5 +10,6 @@ namespace Domain.Repositories
         Task<Result> AddAuthorAsync(Author author);
         Task<Author?> GetAuthorByIdAsync(int authorId);
         Task SaveChangesAsync();
+        Task<Author?> DeleteAuthorAsync(int authorId);
     }
 }

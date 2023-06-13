@@ -17,6 +17,7 @@ namespace Application.Profiles
             CreateMap<AddAuthorCommand, Author>();
             CreateMap<AuthorRetrievalDTO, AuthorUpdateDTO>();
             CreateMap<AuthorUpdateDTO, Author>();
+            CreateMap<Author, AuthorDTO>();
         }
     }
 }

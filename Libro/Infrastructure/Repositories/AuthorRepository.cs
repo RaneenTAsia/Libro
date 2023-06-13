@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -61,6 +62,27 @@ namespace Infrastructure.Repositories
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Author?> DeleteAuthorAsync(int authorId)
+        {
+            var author = await GetAuthorByIdAsync(authorId);
+
+            if (author == null)
+            {
+                return null;
+            }
+
+            _context.Authors.Remove(author);
+
+            await SaveChangesAsync();
+
+            if (await AuthorExistsAsync(authorId))
+            {
+                return null ;
+            }
+
+            return author;
         }
     }
 }
