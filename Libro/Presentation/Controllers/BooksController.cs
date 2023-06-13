@@ -2,12 +2,14 @@
 using Application.Entities.Books.Commands;
 using Application.Entities.Books.Queries;
 using Azure.Core;
+using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Presentation.Controllers
 {
@@ -126,6 +128,24 @@ namespace Presentation.Controllers
                JsonSerializer.Serialize(result.Item2));
 
             return Ok(result.Item1);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator,Librarian")]
+        public async Task<ActionResult> CreateBook(AddBookCommand command)
+        {
+            if (command == null)
+                return NotFound();
+
+            if (!ModelState.IsValid || !TryValidateModel(command))
+                return BadRequest(ModelState);
+
+            var result = await _mediator.Send(command);
+
+            if(result.Item1 == Result.Failed)
+                return BadRequest(result.Item2);
+
+            return Ok(result.Item2);
         }
     }
 }

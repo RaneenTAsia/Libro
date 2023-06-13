@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.Entities.Books.Commands;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -15,6 +16,7 @@ namespace Application.Profiles
         {
             CreateMap<ViewBooks, BrowsingBookDTO>();
             CreateMap<ViewBooks, BookDetailsDTO>();
+            CreateMap<AddBookCommand, Book>();
         }
     }
 }

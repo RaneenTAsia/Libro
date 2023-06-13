@@ -11,6 +11,7 @@ namespace Domain.Repositories
         Task<Status> GetBookStatusByIdAsync(int bookId);
         Task<bool> BookExistsAsync(int bookId);
         Task SaveChangesAsync();
+        Task<Result> AddBookAsync(Book book);
 
     }
 }

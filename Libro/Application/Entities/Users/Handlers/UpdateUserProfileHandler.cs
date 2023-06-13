@@ -21,9 +21,9 @@ namespace Application.Entities.Users.Handlers
     {
         public readonly IUserRepository _userRepository;
         public readonly IMapper _mapper;
-        public readonly ILogger<GetUserHandler> _logger;
+        public readonly ILogger<UpdateUserProfileHandler> _logger;
 
-        public UpdateUserProfileHandler(IUserRepository userRepository, IMapper mapper, ILogger<GetUserHandler> logger)
+        public UpdateUserProfileHandler(IUserRepository userRepository, IMapper mapper, ILogger<UpdateUserProfileHandler> logger)
         {
             _userRepository = userRepository;
             _mapper = mapper;

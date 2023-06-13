@@ -58,5 +58,19 @@ namespace Infrastructure.Repositories
         {
             return await _context.Books.AnyAsync(b => b.BookId == bookId);
         }
+
+        public async Task<Result> AddBookAsync(Book book)
+        {
+            _context.Books.Add(book);
+
+            await _context.SaveChangesAsync();
+
+            if (await _context.Books.AnyAsync(br => br.BookId == book.BookId))
+            {
+                return Result.Completed;
+            }
+
+            return Result.Failed;
+        }
     }
 }

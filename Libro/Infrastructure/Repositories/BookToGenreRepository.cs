@@ -1,5 +1,6 @@
 ﻿using AutoDependencyRegistration.Attributes;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
