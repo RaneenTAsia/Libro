@@ -12,6 +12,7 @@ namespace Domain.Repositories
         Task<bool> BookExistsAsync(int bookId);
         Task SaveChangesAsync();
         Task<Result> AddBookAsync(Book book);
+        Task<Result> DeleteBookAsync(int bookId);
 
     }
 }

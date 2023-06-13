@@ -72,5 +72,26 @@ namespace Infrastructure.Repositories
 
             return Result.Failed;
         }
+
+        public async Task<Result> DeleteBookAsync(int bookId)
+        {
+            var book = await GetBookByIdAsync(bookId);
+
+            if(book== null)
+            {
+                return Result.Failed;
+            }
+
+            _context.Books.Remove(book);
+
+            await SaveChangesAsync();
+
+            if(await BookExistsAsync(bookId))
+            {
+                return Result.Failed;
+            }
+
+            return Result.Completed;
+        }
     }
 }

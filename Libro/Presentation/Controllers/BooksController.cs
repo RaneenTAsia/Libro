@@ -152,6 +152,8 @@ namespace Presentation.Controllers
         [Authorize(Roles = "Administrator,Librarian")]
         public async Task<ActionResult> UpdateBook(int bookId, BookRetrievalDTO bookDTO)
         {
+            if (bookDTO == null)
+                return BadRequest();
             var command = new UpdateBookCommand() { BookId= bookId, RetrievedBookDTO = bookDTO};
 
             if (command == null)
@@ -159,6 +161,20 @@ namespace Presentation.Controllers
 
             if (!ModelState.IsValid || !TryValidateModel(command))
                 return BadRequest(ModelState);
+
+            var result = await _mediator.Send(command);
+
+            return result;
+        }
+
+        [HttpDelete("{bookId}")]
+        [Authorize(Roles = "Administrator,Librarian")]
+        public async Task<ActionResult> DeleteBook(int bookId)
+        {
+            var command = new DeleteBookCommand() { BookId = bookId };
+
+            if (command == null)
+                return NotFound();
 
             var result = await _mediator.Send(command);
 

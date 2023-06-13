@@ -19,6 +19,7 @@ namespace Application.Profiles
             CreateMap<AddBookCommand, Book>();
             CreateMap<BookRetrievalDTO, BookUpdateDTO>();
             CreateMap<Book, BookUpdateDTO>().ReverseMap();
+            CreateMap<Book, BookDTO>();
         }
     }
 }
