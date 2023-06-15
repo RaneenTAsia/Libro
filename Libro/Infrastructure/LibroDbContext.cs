@@ -23,6 +23,8 @@ namespace Infrastructure
         public DbSet<User> Users { get; set; }
         public DbSet<BookTransaction> BookTransactions { get; set; }
         public DbSet<BookReservation> BookReservations { get; set; }
+        public DbSet<ReadingList> ReadingLists { get; set; }
+        public DbSet<ReadingItem> ReadingItems { get; set; }
         public string BookAuthorsFunctionResult(int bookId) => throw new NotSupportedException();
         public string BookGenresFunctionResult (int bookId) => throw new NotSupportedException();
         public DbSet<ViewBooks> ViewBooks { get; set; }

@@ -1,15 +1,12 @@
 ﻿using Application.DTOs;
 using Application.Entities.Books.Commands;
 using Application.Entities.Books.Queries;
-using Azure.Core;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Presentation.Controllers
 {
@@ -39,9 +36,9 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("browse")]
-        public async Task<ActionResult> BrowseBooksAsync( int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult> BrowseBooksAsync(int pageNumber = 1, int pageSize = 10)
         {
-            var query = new BrowseAvailableBooksQuery {  pageNumber = pageNumber, pageSize = pageSize };
+            var query = new BrowseAvailableBooksQuery { pageNumber = pageNumber, pageSize = pageSize };
 
             var result = await _mediator.Send(query);
 
@@ -54,7 +51,7 @@ namespace Presentation.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetBookIdAsync(int id)
         {
-            var query = new GetBookDetailsQuery { BookId= id };
+            var query = new GetBookDetailsQuery { BookId = id };
 
             var result = await _mediator.Send(query);
 
@@ -69,7 +66,7 @@ namespace Presentation.Controllers
             var command = new ReserveBookCommand { UserId = userId, BookId = id };
             var result = await _mediator.Send(command);
 
-            if(result.Item1 == Domain.Enums.Result.Failed)
+            if (result.Item1 == Domain.Enums.Result.Failed)
             {
                 return BadRequest(result.Item2);
             }
@@ -78,7 +75,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPost("checkout")]
-        [Authorize(Policy ="MustBeLibrarian")]
+        [Authorize(Policy = "MustBeLibrarian")]
         public async Task<ActionResult> CheckoutBookAsync(CheckoutBookCommand command)
         {
             if (command == null)
@@ -119,7 +116,7 @@ namespace Presentation.Controllers
             {
                 return BadRequest();
             }
-            else if(result.Item1.Count == 0)
+            else if (result.Item1.Count == 0)
             {
                 return Ok("There are no Overdue Books");
             }
@@ -142,7 +139,7 @@ namespace Presentation.Controllers
 
             var result = await _mediator.Send(command);
 
-            if(result.Item1 == Result.Failed)
+            if (result.Item1 == Result.Failed)
                 return BadRequest(result.Item2);
 
             return Ok(result.Item2);
@@ -154,7 +151,7 @@ namespace Presentation.Controllers
         {
             if (bookDTO == null)
                 return BadRequest();
-            var command = new UpdateBookCommand() { BookId= bookId, RetrievedBookDTO = bookDTO};
+            var command = new UpdateBookCommand() { BookId = bookId, RetrievedBookDTO = bookDTO };
 
             if (command == null)
                 return NotFound();
@@ -179,6 +176,21 @@ namespace Presentation.Controllers
             var result = await _mediator.Send(command);
 
             return result;
+        }
+
+        [HttpPost("{bookId}/favorite")]
+        [Authorize(Policy = "MustBePatron")]
+        public async Task<ActionResult> SaveBookAsync(int bookId, int readingList)
+        {
+            var command = new SaveBookCommand { BookId = bookId, ReadingListId = 1 };
+            var result = await _mediator.Send(command);
+
+            if (result.Item1 == Result.Failed)
+            {
+                return BadRequest(result.Item2);
+            }
+
+            return Ok(result.Item2);
         }
     }
 }

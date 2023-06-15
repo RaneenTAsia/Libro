@@ -1,6 +1,5 @@
 ﻿using Application.DTOs;
 using Application.Entities.Authors.Commands;
-using Application.Entities.Books.Commands;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +9,7 @@ namespace Presentation.Controllers
 {
     [Route("api/authors")]
     [ApiController]
-    public class AuthorsController :ControllerBase
+    public class AuthorsController : ControllerBase
     {
         public readonly IMediator _mediator;
 
@@ -20,7 +19,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles ="Administrator,Librarian")]
+        [Authorize(Roles = "Administrator,Librarian")]
         public async Task<ActionResult> CreateAuthor(AddAuthorCommand command)
         {
             if (command == null)

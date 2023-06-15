@@ -25,6 +25,8 @@ namespace Infrastructure.Persistence.EntityConfigurations
             ConfigureUserFluentValidations();
             ConfigureBookTransactionFluentValidations();
             ConfigureBookReservationFluentValidations();
+            ConfigureReadingItemsFluentValidations();
+            ConfigureReadingListsFluentValidations();
         }
 
         public void SeedTables()
@@ -37,6 +39,8 @@ namespace Infrastructure.Persistence.EntityConfigurations
             SeedUserTable();
             SeedBookTransactionsTable();
             SeedBookReservationsTable();
+            SeedReadingListsTable();
+            SeedReadingItemsTable();
         }
 
         public void ConfigureAuthorFluentValidations()
@@ -98,6 +102,17 @@ namespace Infrastructure.Persistence.EntityConfigurations
             ModelBuilder.Entity<BookToBookGenre>().HasKey("BookId", "BookGenreId");
         }
 
+        public void ConfigureReadingListsFluentValidations()
+        {
+            ModelBuilder.Entity<ReadingList>().Property(ri => ri.Title).IsRequired().HasDefaultValue("Reading List");
+            ModelBuilder.Entity<ReadingList>().Property(ri => ri.UserId).IsRequired();
+        }
+
+        public void ConfigureReadingItemsFluentValidations()
+        {
+            ModelBuilder.Entity<ReadingItem>().Property(ri => ri.BookId).IsRequired();
+        }
+
         public void SetUpRelationships()
         {
             ModelBuilder.Entity<Author>()
@@ -135,6 +150,10 @@ namespace Infrastructure.Persistence.EntityConfigurations
                         ab.HasKey(a => new { a.BookId, a.BookGenreId });
                     }
                 );
+
+            ModelBuilder.Entity<ReadingItem>()
+                .HasOne(r => r.ReadingList)
+                .WithMany(rl => rl.ReadingItems);
         }
 
         public void SeedAuthorsTable()
@@ -245,6 +264,26 @@ namespace Infrastructure.Persistence.EntityConfigurations
             };
 
             ModelBuilder.Entity<BookReservation>().HasData(bookReservations);
+        }
+
+        public void SeedReadingListsTable()
+        {
+            List<ReadingList> readingLists = new List<ReadingList>()
+            {
+                new ReadingList{ ReadingListId = 1, Title = "Calmimg", UserId = 4}
+            };
+
+            ModelBuilder.Entity <ReadingList>().HasData(readingLists);
+        }
+
+        public void SeedReadingItemsTable()
+        {
+            List<ReadingItem> readingItems = new List<ReadingItem>()
+            {
+                new ReadingItem{ ReadingItemId = 1, BookId = 1, ReadingListId = 1}
+            };
+
+            ModelBuilder.Entity<ReadingItem>().HasData(readingItems);
         }
 
         public void MapViews()
