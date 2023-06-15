@@ -69,5 +69,25 @@ namespace Presentation.Controllers
 
             return result;
         }
+
+        [HttpPost]
+        [Authorize(Policy = "MustBePatron")]
+        public async Task<ActionResult> AddReadingListAsync(int userId, ReadingListForCreationDTO readingList)
+        {
+            var tokenUserId = Convert.ToInt32(User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"));
+            if (tokenUserId != userId)
+            {
+                return Unauthorized();
+            }
+
+            if (!ModelState.IsValid || !TryValidateModel(readingList))
+                return BadRequest(ModelState);
+
+            var command = new AddReadingListCommand { UserId = userId, Title = readingList.Title};
+
+            var result = await _mediator.Send(command);
+
+            return result;
+        }
     }
 }

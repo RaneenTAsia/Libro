@@ -15,6 +15,7 @@ namespace Application.Profiles
         public ReadingListsProfile()
         {
             CreateMap<ReadingList, ReadingListDTO>();
+            CreateMap<AddReadingListCommand, ReadingList>();
         }
     }
 }
