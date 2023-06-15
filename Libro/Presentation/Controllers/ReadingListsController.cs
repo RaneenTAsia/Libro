@@ -52,5 +52,22 @@ namespace Presentation.Controllers
 
             return result;
         }
+
+        [HttpDelete("{readingListId}")]
+        [Authorize(Policy = "MustBePatron")]
+        public async Task<ActionResult> DeleteListAsync(int userId, int readingListId)
+        {
+            var tokenUserId = Convert.ToInt32(User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"));
+            if (tokenUserId != userId)
+            {
+                return Unauthorized();
+            }
+
+            var command = new DeleteReadingListCommand { ReadingListId = readingListId };
+
+            var result = await _mediator.Send(command);
+
+            return result;
+        }
     }
 }
