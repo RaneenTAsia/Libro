@@ -30,6 +30,7 @@ namespace Infrastructure
         public DbSet<ViewBooks> ViewBooks { get; set; }
         public DbSet<ViewOverdueBookDetails> ViewOverdueBooksDetails { get; set; }
         public IQueryable<UserBorrowingHistoryFunctionResult> UserBorrowingHistoryFunctionResults(int UserId) => FromExpression(expression: () => UserBorrowingHistoryFunctionResults(UserId));
+        public IQueryable<ReadingListItemFunctionResult> ReadingListItemsFunctionResults(int ReadingListId) => FromExpression(expression: () => ReadingListItemsFunctionResults(ReadingListId));
 
         public LibroDbContext()
         {
@@ -66,7 +67,10 @@ namespace Infrastructure
             modelBuilder.HasDbFunction(typeof(LibroDbContext).GetMethod(nameof(UserBorrowingHistoryFunctionResults), new[] { typeof(int) }))
                 .HasName("fnUserBorrowingHistory");
 
-            creator.MapViews();
+            modelBuilder.HasDbFunction(typeof(LibroDbContext).GetMethod(nameof(ReadingListItemsFunctionResults), new[] { typeof(int) }))
+                 .HasName("fnReadingListItems");
+
+            creator.MapViewsAndFunctions();
         }
     }
 }

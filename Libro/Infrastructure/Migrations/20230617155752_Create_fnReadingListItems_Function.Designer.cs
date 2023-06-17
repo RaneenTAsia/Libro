@@ -4,6 +4,7 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(LibroDbContext))]
-    partial class LibroDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230617155752_Create_fnReadingListItems_Function")]
+    partial class Create_fnReadingListItems_Function
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -531,8 +534,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 1,
                             Email = "Rami@gmail.com",
-                            PasswordHash = "bdC22jixAaZ0nAXfn/MgaRqMYj9Zfd6Vfkt3ddNsDS4=",
-                            PasswordSalt = "CQE0Yv7RzCzI23Ja/xqiyg==",
+                            PasswordHash = "IfBduzYhv6VXRT17Yiz99BskSeCfA/l0R2gQyN62YmI=",
+                            PasswordSalt = "iJNW2Z0PF9V8Ci/ObQrIUA==",
                             Role = 1,
                             Username = "Rami"
                         },
@@ -540,8 +543,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 2,
                             Email = "RayyanTawfieg@gmail.com",
-                            PasswordHash = "2R3oX3KN6xkEx3wrGAUeDp7jw8sR/Drr/eKZiO50Ha8=",
-                            PasswordSalt = "CQE0Yv7RzCzI23Ja/xqiyg==",
+                            PasswordHash = "K+lKgRaRDvf7u2CAHVEJY7JFh+BaPjQH/dturl/i8Yw=",
+                            PasswordSalt = "iJNW2Z0PF9V8Ci/ObQrIUA==",
                             Role = 2,
                             Username = "Rayyan"
                         },
@@ -549,8 +552,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 3,
                             Email = "Raneenasia101@gmail.com",
-                            PasswordHash = "6QPUhTVBiog53g35Ibt/SIfLaEjcf4qR/jpLUvhW/UI=",
-                            PasswordSalt = "CQE0Yv7RzCzI23Ja/xqiyg==",
+                            PasswordHash = "FzmkJXSLfKMBLe6Ad4A0q3AXLRya7lC4IfPLOI76rw4=",
+                            PasswordSalt = "iJNW2Z0PF9V8Ci/ObQrIUA==",
                             Role = 3,
                             Username = "Raneen"
                         },
@@ -558,8 +561,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 4,
                             Email = "Reema@gmail.com",
-                            PasswordHash = "0pkGKGsZNUYcsygw2xlpRqqe/AmvtBlm1vKMT3FcjTs=",
-                            PasswordSalt = "CQE0Yv7RzCzI23Ja/xqiyg==",
+                            PasswordHash = "mQ4eR1YSkehoK1m4EM3F2Bmqs0sgErH/Is7LnQ22q8A=",
+                            PasswordSalt = "iJNW2Z0PF9V8Ci/ObQrIUA==",
                             Role = 3,
                             Username = "Reema"
                         });

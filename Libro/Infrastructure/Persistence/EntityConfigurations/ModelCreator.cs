@@ -286,11 +286,12 @@ namespace Infrastructure.Persistence.EntityConfigurations
             ModelBuilder.Entity<ReadingItem>().HasData(readingItems);
         }
 
-        public void MapViews()
+        public void MapViewsAndFunctions()
         {
             ModelBuilder.Entity<ViewBooks>().HasNoKey().ToView("ViewBooks");
             ModelBuilder.Entity<ViewOverdueBookDetails>().HasNoKey().ToView("ViewOverdueBooksDetails");
             ModelBuilder.Entity<UserBorrowingHistoryFunctionResult>().HasNoKey();
+            ModelBuilder.Entity<ReadingListItemFunctionResult>().HasNoKey();
         }
     }
 }
