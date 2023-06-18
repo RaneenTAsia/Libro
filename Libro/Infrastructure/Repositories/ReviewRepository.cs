@@ -39,5 +39,15 @@ namespace Infrastructure.Repositories
 
             return Result.Completed;
         }
+
+        public async Task<Review?> GetReviewAsync(int userId, int bookId)
+        {
+            return await  _context.Reviews.FirstOrDefaultAsync(r => r.UserId == userId && r.BookId == bookId);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

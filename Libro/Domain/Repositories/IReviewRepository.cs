@@ -7,5 +7,7 @@ namespace Domain.Repositories
     {
         Task<Result> CreateReviewAsync(Review review);
         Task<bool> ReviewExistsAsync(int userId, int bookId);
+        Task<Review?> GetReviewAsync(int userId, int bookId);
+        Task SaveChangesAsync();
     }
 }

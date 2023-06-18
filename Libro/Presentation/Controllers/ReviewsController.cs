@@ -37,5 +37,24 @@ namespace Presentation.Controllers
 
             return result;
         }
+
+        [HttpPut]
+        [Authorize(Policy = "MustBePatron")]
+        public async Task<ActionResult> UpdateReviewAsync(int bookId, ReviewRetrievalDTO updateReviewDTO)
+        {
+            var tokenUserId = Convert.ToInt32(User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"));
+
+            if (updateReviewDTO == null)
+                return NotFound();
+
+            if (!ModelState.IsValid || !TryValidateModel(updateReviewDTO))
+                return BadRequest(ModelState);
+
+            var command = new UpdateReviewCommand { BookId = bookId, UserId = tokenUserId, CreateReviewDTO = updateReviewDTO };
+            var result = await _mediator.Send(command);
+
+            return result;
+        }
+
     }
 }
