@@ -31,6 +31,7 @@ namespace Infrastructure
         public DbSet<ViewOverdueBookDetails> ViewOverdueBooksDetails { get; set; }
         public IQueryable<UserBorrowingHistoryFunctionResult> UserBorrowingHistoryFunctionResults(int UserId) => FromExpression(expression: () => UserBorrowingHistoryFunctionResults(UserId));
         public IQueryable<ReadingListItemFunctionResult> ReadingListItemsFunctionResults(int ReadingListId) => FromExpression(expression: () => ReadingListItemsFunctionResults(ReadingListId));
+        public DbSet<Review> Reviews { get; set; }
 
         public LibroDbContext()
         {

@@ -27,6 +27,7 @@ namespace Infrastructure.Persistence.EntityConfigurations
             ConfigureBookReservationFluentValidations();
             ConfigureReadingItemsFluentValidations();
             ConfigureReadingListsFluentValidations();
+            ConfigureReviewsFluentValidations();
         }
 
         public void SeedTables()
@@ -41,6 +42,7 @@ namespace Infrastructure.Persistence.EntityConfigurations
             SeedBookReservationsTable();
             SeedReadingListsTable();
             SeedReadingItemsTable();
+            SeedReviewsTable();
         }
 
         public void ConfigureAuthorFluentValidations()
@@ -111,6 +113,15 @@ namespace Infrastructure.Persistence.EntityConfigurations
         public void ConfigureReadingItemsFluentValidations()
         {
             ModelBuilder.Entity<ReadingItem>().Property(ri => ri.BookId).IsRequired();
+        }
+
+        public void ConfigureReviewsFluentValidations()
+        {
+            ModelBuilder.Entity<Review>().Property(r => r.BookId).IsRequired();
+            ModelBuilder.Entity<Review>().Property(r => r.UserId).IsRequired();
+            ModelBuilder.Entity<Review>().Property(r => r.Rating).IsRequired();
+            ModelBuilder.Entity<Review>().Property(r => r.ReviewContent).HasMaxLength(int.MaxValue);
+            ModelBuilder.Entity<Review>().HasIndex(r => new { r.UserId, r.BookId }).IsUnique();
         }
 
         public void SetUpRelationships()
@@ -284,6 +295,16 @@ namespace Infrastructure.Persistence.EntityConfigurations
             };
 
             ModelBuilder.Entity<ReadingItem>().HasData(readingItems);
+        }
+
+        public void SeedReviewsTable()
+        {
+            List<Review> reviews = new List<Review>()
+            {
+                new Review{ ReviewId = 1, BookId = 3, UserId = 4, Rating = Rating.Excellent, ReviewContent = "Inspiring boook"}
+            };
+
+            ModelBuilder.Entity<Review>().HasData(reviews);
         }
 
         public void MapViewsAndFunctions()
