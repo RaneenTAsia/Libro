@@ -313,6 +313,7 @@ namespace Infrastructure.Persistence.EntityConfigurations
             ModelBuilder.Entity<ViewOverdueBookDetails>().HasNoKey().ToView("ViewOverdueBooksDetails");
             ModelBuilder.Entity<UserBorrowingHistoryFunctionResult>().HasNoKey();
             ModelBuilder.Entity<ReadingListItemFunctionResult>().HasNoKey();
+            ModelBuilder.Entity<BookReviewsFunctionResult>().HasNoKey();
         }
     }
 }

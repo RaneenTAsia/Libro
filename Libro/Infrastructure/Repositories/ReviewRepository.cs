@@ -3,11 +3,6 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -42,7 +37,7 @@ namespace Infrastructure.Repositories
 
         public async Task<Review?> GetReviewAsync(int userId, int bookId)
         {
-            return await  _context.Reviews.FirstOrDefaultAsync(r => r.UserId == userId && r.BookId == bookId);
+            return await _context.Reviews.FirstOrDefaultAsync(r => r.UserId == userId && r.BookId == bookId);
         }
 
         public async Task SaveChangesAsync()
@@ -53,7 +48,7 @@ namespace Infrastructure.Repositories
         public async Task<Review> DeleteReviewAsync(int userId, int bookId)
         {
             var review = await GetReviewAsync(userId, bookId);
-             _context.Reviews.Remove(review);
+            _context.Reviews.Remove(review);
             await _context.SaveChangesAsync();
 
             if (await ReviewExistsAsync(userId, bookId))
