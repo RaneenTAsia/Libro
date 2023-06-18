@@ -49,5 +49,17 @@ namespace Infrastructure.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Review> DeleteReviewAsync(int userId, int bookId)
+        {
+            var review = await GetReviewAsync(userId, bookId);
+             _context.Reviews.Remove(review);
+            await _context.SaveChangesAsync();
+
+            if (await ReviewExistsAsync(userId, bookId))
+                return null;
+
+            return review;
+        }
     }
 }
