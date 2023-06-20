@@ -4,10 +4,12 @@ using Domain.Enums;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure;
+using Infrastructure.Persistence.Settings;
 using Infrastructure.Validators;
 using MediatR;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
@@ -103,6 +105,8 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Patron");
     });
 });
+
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 var app = builder.Build();
 

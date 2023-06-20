@@ -102,5 +102,19 @@ namespace Presentation.Controllers
 
             return result;
         }
+
+        [Authorize(Policy = "MustBeLibrarian")]
+        [HttpPost("mail")]
+        public async Task<ActionResult> SendPatronEmailAsync([FromForm] SendEmailToUserQuery request)
+        {
+            if (!ModelState.IsValid || !TryValidateModel(request))
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _mediator.Send(request);
+
+            return result;
+        }
     }
 }
