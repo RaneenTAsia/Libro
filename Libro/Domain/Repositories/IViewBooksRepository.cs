@@ -7,5 +7,6 @@ namespace Domain.Repositories
         Task<List<ViewBooks>> GetBooksAsync();
         List<ViewBooks> GetBooksWithAuthor(string author);
         List<ViewBooks> GetBooksWithTitle(string title);
+        List<ViewBooks> GetBooksWithIds(List<int> bookIds);
     }
 }

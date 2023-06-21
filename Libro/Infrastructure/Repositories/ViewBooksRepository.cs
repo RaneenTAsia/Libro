@@ -36,5 +36,9 @@ namespace Infrastructure.Repositories
         {
             return _context.ViewBooks.AsNoTracking().Where(r => r.Title.ToLower().Contains(title.ToLower())).ToList();
         }
+        public List<ViewBooks> GetBooksWithIds(List<int> bookIds)
+        {
+            return _context.ViewBooks.AsNoTracking().Where(r => bookIds.Any(b => b == r.BookId)).ToList();
+        }
     }
 }

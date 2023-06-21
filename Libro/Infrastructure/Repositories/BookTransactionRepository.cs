@@ -69,5 +69,10 @@ namespace Infrastructure.Repositories
             }
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<BookTransaction>> GetUserBorrowingHistoryAsync(int userId)
+        {
+            return await _context.BookTransactions.Where(bt => bt.UserId == userId).ToListAsync();
+        }
     }
 }

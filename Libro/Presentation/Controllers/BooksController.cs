@@ -192,5 +192,22 @@ namespace Presentation.Controllers
 
             return Ok(result.Item2);
         }
+
+
+        [Authorize("MustBePatron")]
+        [HttpGet("recommendations")]
+        public async Task<ActionResult> GetBookRecommendations(int pageNumber = 1, int pageSize = 10)
+        {
+            var tokenUserId = Convert.ToInt32(User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"));
+
+            var query = new GetBookRecommendationsQuery{ UserId = tokenUserId, pageNumber = pageNumber, pageSize = pageSize};
+
+            var result = await _mediator.Send(query);
+
+            Response.Headers.Add("X-Pagination",
+                    JsonSerializer.Serialize(result.Item2));
+
+            return Ok(result.Item1);
+        }
     }
 }
