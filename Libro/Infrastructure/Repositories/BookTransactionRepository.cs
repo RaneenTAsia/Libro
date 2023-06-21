@@ -3,11 +3,6 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -47,6 +42,32 @@ namespace Infrastructure.Repositories
         public async Task<BookTransaction?> OngoingBookTransationByBookIdAsync(int bookId)
         {
             return await _context.BookTransactions.FirstOrDefaultAsync(bt => bt.BookId == bookId && !bt.ReturnDate.HasValue);
+        }
+
+        public async Task<List<BookTransaction>> GetOverdueBookTransactionsAsync()
+        {
+            var overdueBooks = await _context.BookTransactions.Where(b => b.ReturnDate == null && b.DueDate < DateTime.UtcNow).ToListAsync();
+            await UpdateFinesAsync(overdueBooks);
+            return overdueBooks;
+        }
+
+        public async Task UpdateFinesAsync(List<BookTransaction> overdueBooks)
+        {
+
+            for (int i = 0; i < overdueBooks.Count; i++)
+            {
+                var daysOverdue = DateTime.UtcNow.Date - overdueBooks[i].DueDate.Date;
+
+                var fine = 0M;
+
+                if (daysOverdue.Days > 0)
+                {
+                    fine = (decimal)daysOverdue.Days * 0.05M;
+                }
+
+                overdueBooks[i].Fine = fine;
+            }
+            await _context.SaveChangesAsync();
         }
     }
 }

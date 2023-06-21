@@ -9,5 +9,6 @@ namespace Domain.Repositories
         Task<bool> BookTransactionExistsByIdAsync(int transactionId);
         Task<int> BookTransactionCurrentCountOfUserByIdAsync(int userId);
         Task<BookTransaction?> OngoingBookTransationByBookIdAsync(int bookId);
+        Task<List<BookTransaction>> GetOverdueBookTransactionsAsync();
     }
 }

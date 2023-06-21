@@ -1,6 +1,7 @@
 using Application.Profiles;
 using AutoDependencyRegistration;
-using Domain.Enums;
+using Domain.Repositories;
+using Domain.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure;
@@ -9,8 +10,8 @@ using Infrastructure.Validators;
 using MediatR;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Presentation;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using System.Reflection;
@@ -109,6 +110,15 @@ builder.Services.AddAuthorization(options =>
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var service = scope.ServiceProvider;
+    var sender = new EmailSender(service);
+    await sender.SendCancelledReservationEmailsAsync();
+    await sender.SendOverdueBookEmailsAsync();
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

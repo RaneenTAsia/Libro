@@ -56,5 +56,18 @@ namespace Infrastructure.Repositories
         {
             return _context.BookReservations.FirstOrDefault(br => br.UserId == userId && br.BookId == bookId);
         }
+
+        public  async Task<List<BookReservation>> RemoveBookReservationsAsync()
+        {
+            var reservationsToDelete = await _context.BookReservations.Where(r => r.ReserveDate.AddDays(14) <= DateTime.UtcNow).ToListAsync();
+
+            _context.BookReservations.RemoveRange(reservationsToDelete);
+
+            await _context.SaveChangesAsync();
+
+            return reservationsToDelete;
+        }
+
+
     }
 }

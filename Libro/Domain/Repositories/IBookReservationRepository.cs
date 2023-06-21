@@ -9,5 +9,6 @@ namespace Domain.Repositories
         BookReservation? GetBookReservation(int userId, int bookId);
         Task<Result> DeleteBookReservationAsync(BookReservation reservation);
         Task<bool> BookReservationExistsAsync(int userId, int bookId);
+        Task<List<BookReservation>> RemoveBookReservationsAsync();
     }
 }

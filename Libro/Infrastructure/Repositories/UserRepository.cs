@@ -70,5 +70,17 @@ namespace Infrastructure.Repositories
         {
             return await _context.Users.AnyAsync(u =>u.UserId == userId);
         }
+
+        public async Task<List<string>> GetUserEmailsByIdsAsync(List<int> ids)
+        {
+            List<string> emails = new List<string>();
+            for (int i = 0; i < ids.Count; i++)
+            {
+                if(await UserExistsByIdAsync(ids[i]))
+                emails.Add(await _context.Users.Where(u => u.UserId == ids[i]).Select(u => u.Email).FirstOrDefaultAsync());
+            }
+
+            return emails;
+        }
     }
 }

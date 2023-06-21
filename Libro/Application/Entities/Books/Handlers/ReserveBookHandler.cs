@@ -3,6 +3,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
+using Domain.Services;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,13 +13,17 @@ namespace Application.Entities.Books.Handlers
     {
         public readonly IBookRepository _bookRepository;
         public readonly IBookReservationRepository _bookReservationRepository;
+        public readonly IUserRepository _userRepository;
+        public readonly IMailService _mailService;
         public readonly ILogger<ReserveBookHandler> _logger;
         public readonly IMapper _mapper;
 
-        public ReserveBookHandler(IBookRepository bookRepository, IBookReservationRepository bookReservationRepository, ILogger<ReserveBookHandler> logger, IMapper mapper)
+        public ReserveBookHandler(IBookRepository bookRepository, IBookReservationRepository bookReservationRepository, IUserRepository userRepository, IMailService mailService, ILogger<ReserveBookHandler> logger, IMapper mapper)
         {
             _bookRepository = bookRepository;
             _bookReservationRepository = bookReservationRepository;
+            _userRepository = userRepository;
+            _mailService = mailService;
             _logger = logger;
             _mapper = mapper;
         }
@@ -27,7 +32,9 @@ namespace Application.Entities.Books.Handlers
         {
             _logger.LogDebug("Checking if Book {0} exists", request.BookId);
 
-            if(!(await _bookRepository.BookExistsAsync(request.UserId)))
+            var book = await _bookRepository.GetBookByIdAsync(request.BookId);
+
+            if(book == null)
             {
                 return (Result.Failed, "Book Does Not Exist");
             }
@@ -41,6 +48,7 @@ namespace Application.Entities.Books.Handlers
 
             await _bookRepository.SetBookAsReservedAsync(request.BookId);
 
+
             var reservation = new BookReservation { BookId= request.BookId, UserId = request.UserId, ReserveDate = DateTime.UtcNow };
 
             _logger.LogDebug("Adding Book Reservation {0}", reservation.BookReservationId);
@@ -50,6 +58,12 @@ namespace Application.Entities.Books.Handlers
             {
                 return (Result.Failed, "Was not able to register reservation");
             }
+
+            //send email for completed reservation
+            var user = await _userRepository.GetUserByIdAsync(request.UserId);
+
+            _logger.LogDebug("Sending reservation completion email to {0}", user.Email);
+            await _mailService.SendCompletedReservationEmailAsync(user.Email, book.Title);
 
             return (Result.Completed, "Successfully Reserved Book");
         }

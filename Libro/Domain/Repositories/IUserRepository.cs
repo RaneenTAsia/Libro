@@ -11,5 +11,6 @@ namespace Domain.Repositories
         Task SaveChangesAsync();
         Task<User?> GetUserByIdAsync(int id);
         Task<bool> UserExistsByIdAsync(int userId);
+        Task<List<string>> GetUserEmailsByIdsAsync(List<int> ids);
     }
 }
