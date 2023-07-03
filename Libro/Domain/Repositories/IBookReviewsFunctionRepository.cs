@@ -4,6 +4,6 @@ namespace Domain.Repositories
 {
     public interface IBookReviewsFunctionRepository
     {
-        Task<List<BookReviewsFunctionResult>> GetBookReviews(int bookId);
+        Task<List<BookReviewsFunctionResult>> GetBookReviewsAsync(int bookId);
     }
 }

@@ -21,7 +21,7 @@ namespace Infrastructure.Repositories
         {
             _context = context;
         }
-
+            
         public async Task<List<Author>> GetAuthorsByIdsAsync(List<int> authorIds)
         {
             List<Author> authors = new List<Author>();
@@ -74,13 +74,6 @@ namespace Infrastructure.Repositories
             }
 
             _context.Authors.Remove(author);
-
-            await SaveChangesAsync();
-
-            if (await AuthorExistsAsync(authorId))
-            {
-                return null ;
-            }
 
             return author;
         }

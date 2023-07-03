@@ -19,15 +19,13 @@ namespace Application.Entities.Reviews.Handlers
     {
         public readonly IBookRepository _bookRepository;
         public readonly IReviewRepository _reviewRepository;
-        public readonly IMapper _mapper;
         public readonly ILogger<DeleteReviewHandler> _logger;
 
-        public DeleteReviewHandler(IBookRepository bookRepository, IReviewRepository reviewRepository, IMapper mapper, ILogger<DeleteReviewHandler> logger)
+        public DeleteReviewHandler(IBookRepository bookRepository, IReviewRepository reviewRepository, ILogger<DeleteReviewHandler> logger)
         {
             _bookRepository = bookRepository ?? throw new ArgumentNullException();
             _reviewRepository = reviewRepository ?? throw new ArgumentNullException();
             _logger = logger ?? throw new ArgumentNullException();
-            _mapper = mapper ?? throw new ArgumentNullException();
         }
 
         public async Task<ActionResult> Handle(DeleteReviewCommand request, CancellationToken cancellationToken)

@@ -33,6 +33,8 @@ namespace Application.Entities.Authors.Handlers
             _logger.LogDebug("Deleting author");
             var authorFromRepo = await _authorRepository.DeleteAuthorAsync(request.AuthorId);
 
+            await _authorRepository.SaveChangesAsync();
+
             if (authorFromRepo == null)
             {
                 return new ConflictObjectResult("Author was not successfully Deleted");

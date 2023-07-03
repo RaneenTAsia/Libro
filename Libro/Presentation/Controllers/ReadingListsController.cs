@@ -96,7 +96,7 @@ namespace Presentation.Controllers
                 return Unauthorized();
             }
 
-            var query = new GetReadingListQuery { ReadingListId = readingListId, UserId = userId, pageNumber = pageNumber, pageSize = pageSize };
+            var query = new GetReadingListQuery { ReadingListId = readingListId, pageNumber = pageNumber, pageSize = pageSize };
 
             var result = await _mediator.Send(query);
 

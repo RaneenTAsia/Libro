@@ -19,18 +19,14 @@ namespace Application.Entities.Reviews.Handlers
     public class GetReviewsHandler : IRequestHandler<GetReviewsQuery, (ActionResult, PaginationMetadata)>
     {
         public readonly IBookRepository _bookRepository;
-        public readonly IReviewRepository _reviewRepository;
         public readonly IBookReviewsFunctionRepository _bookReviewsFunctionRepository;
-        public readonly IMapper _mapper;
         public readonly ILogger<GetReviewsHandler> _logger;
         const int maxPageSize = 10;
-        public GetReviewsHandler(IBookRepository bookRepository, IReviewRepository reviewRepository, IBookReviewsFunctionRepository bookReviewsFunctionRepository, IMapper mapper, ILogger<GetReviewsHandler> logger)
+        public GetReviewsHandler(IBookRepository bookRepository, IBookReviewsFunctionRepository bookReviewsFunctionRepository, ILogger<GetReviewsHandler> logger)
         {
             _bookRepository = bookRepository ?? throw new ArgumentNullException();
-            _reviewRepository = reviewRepository ?? throw new ArgumentNullException();
             _bookReviewsFunctionRepository = bookReviewsFunctionRepository?? throw new ArgumentNullException();
             _logger = logger ?? throw new ArgumentNullException();
-            _mapper = mapper ?? throw new ArgumentNullException();
         }
 
         public async Task<(ActionResult, PaginationMetadata)> Handle(GetReviewsQuery request, CancellationToken cancellationToken)
@@ -46,7 +42,7 @@ namespace Application.Entities.Reviews.Handlers
             }
 
             _logger.LogDebug("Get Book Reviews of Book {1} from fnBookReviews function",  request.BookId);
-            var result = await _bookReviewsFunctionRepository.GetBookReviews(request.BookId);
+            var result = await _bookReviewsFunctionRepository.GetBookReviewsAsync(request.BookId);
 
             _logger.LogDebug("Paginating returning list");
             var totalResultCount = result.Count();

@@ -116,6 +116,7 @@ using (var scope = app.Services.CreateScope())
     var service = scope.ServiceProvider;
     var sender = new EmailSender(service);
     await sender.SendCancelledReservationEmailsAsync();
+    if(DateTime.UtcNow.Day % 10 == 0)
     await sender.SendOverdueBookEmailsAsync();
 }
 

@@ -14,7 +14,7 @@ namespace Application.Entities.ReadingLists.Handlers
         public readonly ILogger<GetReadingListHandler> _logger;
         const int maxPageSize = 10;
 
-        public GetReadingListHandler(IReadingListsRepository readingListsRepository, IReadingListItemsFunctionRepository readingListItemsFunctionRepository, IViewBooksRepository viewBooksRepository, ILogger<GetReadingListHandler> logger)
+        public GetReadingListHandler(IReadingListsRepository readingListsRepository, IReadingListItemsFunctionRepository readingListItemsFunctionRepository, ILogger<GetReadingListHandler> logger)
         {
             _readingListsRepository = readingListsRepository;
             _readingListItemsFunctionRepository = readingListItemsFunctionRepository;
@@ -32,7 +32,7 @@ namespace Application.Entities.ReadingLists.Handlers
             }
 
             _logger.LogDebug("Get list {0} items from readingListItemsFunction", request.ReadingListId);
-            var items = await _readingListItemsFunctionRepository.GetReadingList(request.ReadingListId);
+            var items = await _readingListItemsFunctionRepository.GetReadingListAsync(request.ReadingListId);
 
             _logger.LogDebug("Paginating returning list");
             var totalResultCount = items.Count();

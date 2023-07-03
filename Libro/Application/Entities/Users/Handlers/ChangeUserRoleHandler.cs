@@ -10,10 +10,9 @@ namespace Application.Entities.Users.Handlers
     public class ChangeUserRoleHandler : IRequestHandler<ChangeUserRoleCommand, (Result, string)>
     {
         public readonly IUserRepository _userRepository;
-        public readonly IMapper _mapper;
         public readonly ILogger<ChangeUserRoleHandler> _logger;
 
-        public ChangeUserRoleHandler(IUserRepository userRepository, IMapper mapper, ILogger<ChangeUserRoleHandler> logger)
+        public ChangeUserRoleHandler(IUserRepository userRepository, ILogger<ChangeUserRoleHandler> logger)
         {
             _userRepository = userRepository;
             _logger = logger;
@@ -27,7 +26,7 @@ namespace Application.Entities.Users.Handlers
             if (user == null)
             {
                 _logger.LogDebug("User with UserId {0} does not exist", request.UserId);
-                return (Result.Failed, $"User with userId {user.UserId} does not exist");
+                return (Result.Failed, $"User with userId {request.UserId} does not exist");
             }
 
             if (user.Role == (Role)request.Role)

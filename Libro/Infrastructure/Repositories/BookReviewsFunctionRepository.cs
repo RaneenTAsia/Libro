@@ -20,7 +20,7 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<BookReviewsFunctionResult>> GetBookReviews(int bookId)
+        public async Task<List<BookReviewsFunctionResult>> GetBookReviewsAsync(int bookId)
         {
             return await _context.BookReviewsFunctionResults(bookId).ToListAsync();
         }

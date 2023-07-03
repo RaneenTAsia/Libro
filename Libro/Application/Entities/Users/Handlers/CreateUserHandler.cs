@@ -36,7 +36,7 @@ namespace Application.Entities.Users.Handlers
 
             var (user, result) = await _userRepository.CreateUserAsync(userToAdd);
 
-            _logger.LogDebug("Created User with username: {0} and email: {user.Email}", user.Username);
+            _logger.LogDebug("Created User with username: {0} and email: {1}", user.Username, user.Email);
 
             var userAdded = _mapper.Map<UserDTO>(user);
             return (userAdded, result);

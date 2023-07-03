@@ -19,7 +19,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserDTO>> RegisterUserAsync([FromBody] CreateUserCommand userForCreation)
+        public async Task<ActionResult> RegisterUserAsync([FromBody] CreateUserCommand userForCreation)
         {
             if (userForCreation == null)
                 return NotFound();
@@ -36,7 +36,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> LoginAsync([FromBody] AuthenticateUserQuery userToLogin)
+        public async Task<ActionResult> LoginAsync([FromBody] AuthenticateUserQuery userToLogin)
         {
             if (userToLogin == null)
                 return NotFound();

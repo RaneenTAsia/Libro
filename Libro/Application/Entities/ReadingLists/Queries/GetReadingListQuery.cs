@@ -11,7 +11,6 @@ namespace Application.Entities.ReadingLists.Queries
 {
     public class GetReadingListQuery : IRequest<(ActionResult, PaginationMetadata)>
     {
-        public int UserId { get; set; }
         public int ReadingListId { get; set; }
         public int pageNumber { get; set; }
         public int pageSize { get; set; }

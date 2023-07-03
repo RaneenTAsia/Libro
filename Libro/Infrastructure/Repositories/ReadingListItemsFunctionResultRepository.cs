@@ -20,9 +20,9 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<ReadingListItemFunctionResult>> GetReadingList(int readingListId)
+        public async Task<List<ReadingListItemFunctionResult>> GetReadingListAsync(int readingListId)
         {
-            return await _context.ReadingListItemsFunctionResults(readingListId).ToListAsync(); ;
+            return await _context.ReadingListItemsFunctionResults(readingListId).AsNoTracking().ToListAsync(); ;
         }
     }
 }

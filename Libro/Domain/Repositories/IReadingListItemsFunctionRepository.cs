@@ -4,6 +4,6 @@ namespace Domain.Repositories
 {
     public interface IReadingListItemsFunctionRepository
     {
-        Task<List<ReadingListItemFunctionResult>> GetReadingList(int readingListId);
+        Task<List<ReadingListItemFunctionResult>> GetReadingListAsync(int readingListId);
     }
 }

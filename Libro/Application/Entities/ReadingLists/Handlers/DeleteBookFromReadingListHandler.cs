@@ -42,6 +42,7 @@ namespace Application.Entities.ReadingLists.Handlers
             if (!(await _readingItemsRepository.BookExistsInListAsync(request.BookId, request.ReadingListId)))
             {
                 _logger.LogDebug("Book {0} does not exist in ReadingList {1}", request.BookId, request.ReadingListId);
+                return new NotFoundObjectResult("Book does not exist in readingList");
             }
 
             _logger.LogDebug(" Deleting Book {0} from ReadingList {1}", request.BookId, request.ReadingListId);

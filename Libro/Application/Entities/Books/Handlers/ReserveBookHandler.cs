@@ -47,7 +47,7 @@ namespace Application.Entities.Books.Handlers
             }
 
             await _bookRepository.SetBookAsReservedAsync(request.BookId);
-
+            await _bookRepository.SaveChangesAsync();
 
             var reservation = new BookReservation { BookId= request.BookId, UserId = request.UserId, ReserveDate = DateTime.UtcNow };
 

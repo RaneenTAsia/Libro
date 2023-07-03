@@ -9,6 +9,6 @@ namespace Domain.Repositories
         Task<bool> ReviewExistsAsync(int userId, int bookId);
         Task<Review?> GetReviewAsync(int userId, int bookId);
         Task SaveChangesAsync();
-        Task<Review> DeleteReviewAsync(int userId, int bookId);
+        Task<Review?> DeleteReviewAsync(int userId, int bookId);
     }
 }
