@@ -7,6 +7,8 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
+using Domain.Services;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -19,22 +21,40 @@ namespace LibroTests.HandlerTests.BookTests
         private readonly Mock<IBookRepository> _bookRepositoryMock;
         private readonly Mock<IBookReservationRepository> _bookReservationRepositoryMock;
         private readonly Mock<IBookTransactionRepository> _bookTransactionRepositoryMock;
+        private readonly Mock<IUserRepository> _userRepositoryMock;
+        private readonly Mock<IBookTransactionJobRepository> _bookTransactionJobRepositoryMock;
+        private readonly Mock<IBookReservationJobRepository> _bookReservationJobRepositoryMock;
+        private readonly Mock<IMailService> _mailServiceMock;
         private readonly Mock<ILogger<CheckoutBookHandler>> _loggerMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly CheckoutBookHandler _handler;
 
         public CheckoutBookHandlerTests()
         {
+            GlobalConfiguration.Configuration
+           .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+           .UseSimpleAssemblyNameTypeSerializer()
+           .UseRecommendedSerializerSettings()
+           .UseInMemoryStorage();
+
             _bookRepositoryMock = new Mock<IBookRepository>();
             _bookReservationRepositoryMock = new Mock<IBookReservationRepository>();
             _bookTransactionRepositoryMock = new Mock<IBookTransactionRepository>();
+            _bookReservationJobRepositoryMock = new Mock<IBookReservationJobRepository>();
+            _bookTransactionJobRepositoryMock = new Mock<IBookTransactionJobRepository>();
+            _mailServiceMock = new Mock<IMailService>();
+            _userRepositoryMock = new Mock<IUserRepository>();
             _loggerMock = new Mock<ILogger<CheckoutBookHandler>>();
             _mapperMock = new Mock<IMapper>();
 
             _handler = new CheckoutBookHandler(
                 _bookRepositoryMock.Object,
+                _userRepositoryMock.Object,
                 _bookReservationRepositoryMock.Object,
                 _bookTransactionRepositoryMock.Object,
+                _bookTransactionJobRepositoryMock.Object,
+                _bookReservationJobRepositoryMock.Object,
+                _mailServiceMock.Object,
                 _loggerMock.Object,
                 _mapperMock.Object
                 );
@@ -207,7 +227,15 @@ namespace LibroTests.HandlerTests.BookTests
 
             var book = new Book
             {
-                BookStatus = (int)Status.Available
+                BookStatus = (int)Status.Available,
+                Title = "Test"
+            };
+
+
+            var user = new User
+            {
+               Email= "Test",
+               Username= "Test"
             };
 
             var reservation = new BookReservation();
@@ -221,9 +249,21 @@ namespace LibroTests.HandlerTests.BookTests
                 .Setup(repo => repo.GetBookByIdAsync(command.BookId))
                 .ReturnsAsync(book);
 
+            _userRepositoryMock
+                .Setup(repo => repo.GetUserByIdAsync(command.UserId))
+                .ReturnsAsync(user);
+
+            _bookReservationJobRepositoryMock
+                .Setup(repo => repo.GetBookReservationJobAsync(It.IsAny<int>(), It.IsAny<JobType>()))
+                .ReturnsAsync(new BookReservationJob());
+
             _bookTransactionRepositoryMock
                 .Setup(repo => repo.AddBookTransactionAsync(transaction))
                 .ReturnsAsync((transactionReturned, Result.Failed));
+
+            _bookTransactionJobRepositoryMock
+                .Setup(repo => repo.AddBookTransactionJobAsync(It.IsAny<BookTransactionJob>()))
+                .ReturnsAsync(Result.Completed);
 
             _mapperMock.Setup(repo => repo.Map<TransactionToReturnForCheckoutDTO>(transactionReturned))
                 .Returns(checkout);

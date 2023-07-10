@@ -1,9 +1,8 @@
 using Application.Profiles;
 using AutoDependencyRegistration;
-using Domain.Repositories;
-using Domain.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
 using Infrastructure;
 using Infrastructure.Persistence.Settings;
 using Infrastructure.Validators;
@@ -107,19 +106,17 @@ builder.Services.AddAuthorization(options =>
     });
 });
 
+
+builder.Services.AddHangfire(configuration => configuration
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseInMemoryStorage());
+
+builder.Services.AddHangfireServer();
+
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var service = scope.ServiceProvider;
-    var sender = new EmailSender(service);
-    await sender.SendCancelledReservationEmailsAsync();
-    if(DateTime.UtcNow.Day % 10 == 0)
-    await sender.SendOverdueBookEmailsAsync();
-}
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -135,5 +132,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHangfireDashboard("");
 
 app.Run();

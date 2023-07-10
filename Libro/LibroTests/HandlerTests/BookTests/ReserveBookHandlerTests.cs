@@ -5,6 +5,7 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
 using Domain.Services;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -22,16 +23,24 @@ namespace LibroTests.HandlerTests.BookTests
         private readonly Mock<IBookReservationRepository> _bookReservationRepositoryMock;
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IMailService> _mailService;
+        private readonly Mock<IBookReservationJobRepository> _bookReservationJobRepositoryMock;
         private readonly Mock<ILogger<ReserveBookHandler>> _loggerMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly ReserveBookHandler _handler;
 
         public ReserveBookHandlerTests()
         {
+            GlobalConfiguration.Configuration
+           .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+           .UseSimpleAssemblyNameTypeSerializer()
+           .UseRecommendedSerializerSettings()
+           .UseInMemoryStorage();
+
             _bookRepositoryMock = new Mock<IBookRepository>();
             _bookReservationRepositoryMock = new Mock<IBookReservationRepository>();
             _userRepositoryMock = new Mock<IUserRepository>();
             _mailService = new Mock<IMailService>();
+            _bookReservationJobRepositoryMock = new Mock<IBookReservationJobRepository>();
             _loggerMock = new Mock<ILogger<ReserveBookHandler>>();
             _mapperMock = new Mock<IMapper>();
 
@@ -40,9 +49,10 @@ namespace LibroTests.HandlerTests.BookTests
                 _bookReservationRepositoryMock.Object,
                 _userRepositoryMock.Object,
                 _mailService.Object,
+                _bookReservationJobRepositoryMock.Object,
                 _loggerMock.Object,
                 _mapperMock.Object
-                );
+                ); ;
         }
 
         [Fact]
@@ -146,7 +156,10 @@ namespace LibroTests.HandlerTests.BookTests
 
             _userRepositoryMock
                 .Setup(repo => repo.GetUserByIdAsync(command.UserId))
-                .ReturnsAsync(new User { UserId = 1, Email = "dd" });
+                .ReturnsAsync(new User { UserId = 1, Email = "test" });
+
+            _bookReservationJobRepositoryMock
+                .Setup(repo => repo.AddBookReservationJobAsync(new BookReservationJob()));
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);

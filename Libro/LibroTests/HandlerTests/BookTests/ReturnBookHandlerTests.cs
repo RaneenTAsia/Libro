@@ -5,6 +5,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
+using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -20,6 +21,7 @@ namespace LibroTests.HandlerTests.BookTests
     {
         private readonly Mock<IBookRepository> _bookRepositoryMock;
         private readonly Mock<IBookTransactionRepository> _bookTransactionRepositoryMock;
+        private readonly Mock<IBookTransactionJobRepository> _bookTransactionJobRepositoryMock;
         private readonly Mock<ILogger<ReturnBookHandler>> _loggerMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly ReturnBookHandler _handler;
@@ -28,12 +30,14 @@ namespace LibroTests.HandlerTests.BookTests
         {
             _bookRepositoryMock = new Mock<IBookRepository>();
             _bookTransactionRepositoryMock = new Mock<IBookTransactionRepository>();
+            _bookTransactionJobRepositoryMock = new Mock<IBookTransactionJobRepository>();
             _loggerMock = new Mock<ILogger<ReturnBookHandler>>();
             _mapperMock = new Mock<IMapper>();
 
             _handler = new ReturnBookHandler(
                 _bookRepositoryMock.Object,
                 _bookTransactionRepositoryMock.Object,
+                _bookTransactionJobRepositoryMock.Object,
                 _loggerMock.Object,
                 _mapperMock.Object
                 );

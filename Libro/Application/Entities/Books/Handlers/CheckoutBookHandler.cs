@@ -4,6 +4,8 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
+using Domain.Services;
+using Hangfire;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,16 +15,24 @@ namespace Application.Entities.Books.Handlers
     public class CheckoutBookHandler : IRequestHandler<CheckoutBookCommand, ActionResult>
     {
         public readonly IBookRepository _bookRepository;
+        public readonly IUserRepository _userRepository;
         public readonly IBookReservationRepository _bookReservationRepository;
         public readonly IBookTransactionRepository _bookTransactionRepository;
+        public readonly IBookTransactionJobRepository _bookTransactionJobRepository;
+        public readonly IBookReservationJobRepository _bookReservationJobRepository;
+        public readonly IMailService _mailService;
         public readonly ILogger<CheckoutBookHandler> _logger;
         public readonly IMapper _mapper;
 
-        public CheckoutBookHandler(IBookRepository bookRepository, IBookReservationRepository bookReservationRepository, IBookTransactionRepository bookTransactionRepository, ILogger<CheckoutBookHandler> logger, IMapper mapper)
+        public CheckoutBookHandler(IBookRepository bookRepository, IUserRepository userRepository, IBookReservationRepository bookReservationRepository, IBookTransactionRepository bookTransactionRepository, IBookTransactionJobRepository bookTransactionJobRepository, IBookReservationJobRepository bookReservationJobRepository, IMailService mailService, ILogger<CheckoutBookHandler> logger, IMapper mapper)
         {
             _bookRepository = bookRepository;
+            _userRepository = userRepository;
             _bookReservationRepository = bookReservationRepository;
             _bookTransactionRepository = bookTransactionRepository;
+            _bookTransactionJobRepository = bookTransactionJobRepository;
+            _bookReservationJobRepository = bookReservationJobRepository;
+            _mailService = mailService;
             _logger = logger;
             _mapper = mapper;
         }
@@ -42,6 +52,8 @@ namespace Application.Entities.Books.Handlers
                 return new NotFoundObjectResult("Book Doesnt Exist");
             }
 
+            var user = await _userRepository.GetUserByIdAsync(request.UserId);
+
             if (!IsAvailableOrReserved(bookToCheckout))
             {
                 return new BadRequestObjectResult( "Book Not Available for checkout");
@@ -54,11 +66,20 @@ namespace Application.Entities.Books.Handlers
 
                 if (bookReservation == null)
                 {
-                    return new BadRequestObjectResult( "Book is reserved by someone else");
+                    return new BadRequestObjectResult("Book is reserved by someone else");
                 }
+
+                var bookReservationEmailJob = await _bookReservationJobRepository.GetBookReservationJobAsync(bookReservation.BookReservationId, JobType.Email);
+                var bookReservationRemovalJob = await _bookReservationJobRepository.GetBookReservationJobAsync(bookReservation.BookReservationId, JobType.Removal);
                 var deletionResult = await _bookReservationRepository.DeleteBookReservationAsync(bookReservation);
                 if (deletionResult == Result.Failed)
                     return new ConflictObjectResult("Could not delete reservation");
+
+                if (bookReservationRemovalJob != null && bookReservationEmailJob != null)
+                {
+                    BackgroundJob.Delete(bookReservationRemovalJob.JobId);
+                    BackgroundJob.Delete(bookReservationEmailJob.JobId);
+                }
             }
 
             BookTransaction transaction;
@@ -81,6 +102,14 @@ namespace Application.Entities.Books.Handlers
             {
                 return new ConflictObjectResult("Could not add transaction");
             }
+
+            var jobId = BackgroundJob.Schedule(
+                  () => _mailService.SendOverdueBookEmailAsync(user.Email, bookToCheckout.Title,0M),
+                   TimeSpan.FromDays(14));
+
+            var job = new BookTransactionJob { JobId = jobId, BookTransactionId = transaction.BookTransactionId };
+
+            var jobResult = await _bookTransactionJobRepository.AddBookTransactionJobAsync(job);
 
             bookToCheckout.BookStatus = (int)Status.Borrowed;
             await _bookRepository.SaveChangesAsync();

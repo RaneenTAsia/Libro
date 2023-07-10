@@ -4,6 +4,8 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
+using Domain.Services;
+using Hangfire;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -20,13 +22,15 @@ namespace Application.Entities.Books.Handlers
     {
         public readonly IBookRepository _bookRepository;
         public readonly IBookTransactionRepository _bookTransactionRepository;
+        public readonly IBookTransactionJobRepository _bookTransactionJobRepository;
         public readonly ILogger<ReturnBookHandler> _logger;
         public readonly IMapper _mapper;
 
-        public ReturnBookHandler(IBookRepository bookRepository, IBookTransactionRepository bookTransactionRepository, ILogger<ReturnBookHandler> logger, IMapper mapper)
+        public ReturnBookHandler(IBookRepository bookRepository, IBookTransactionRepository bookTransactionRepository, IBookTransactionJobRepository bookTransactionJobRepository, ILogger<ReturnBookHandler> logger, IMapper mapper)
         {
             _bookRepository = bookRepository;
             _bookTransactionRepository = bookTransactionRepository;
+            _bookTransactionJobRepository = bookTransactionJobRepository;
             _logger = logger;
             _mapper = mapper;
         }
@@ -56,6 +60,15 @@ namespace Application.Entities.Books.Handlers
             }
 
             _logger.LogDebug(" BookTransaction {0} return date before update is {1}", bookTransaction.BookTransactionId, bookTransaction.ReturnDate);
+
+            var bookTransactionJob = await _bookTransactionJobRepository.GetBookTransactionJobAsync(bookTransaction.BookTransactionId);
+
+            if (bookTransactionJob != null)
+            {
+                BackgroundJob.Delete(bookTransactionJob.JobId);
+
+                _bookTransactionJobRepository.DeleteBookTransactionJob(bookTransactionJob);
+            }
 
             bookTransaction.ReturnDate = DateTime.UtcNow;
 

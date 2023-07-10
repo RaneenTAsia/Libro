@@ -46,22 +46,6 @@ public class MailService : IMailService
         }
     }
 
-    public async Task SendOverdueBookEmailsAsync(List<string> emails, List<string> books, List<decimal> fines)
-    {
-        var request = new MailRequest();
-        request.Subject = "Overdue Book";
-
-        for (int i = 0; i < emails.Count; i++)
-        {
-            request.Body = $"Hello, we would just like to inform you tha you are in possession of the overdue Book '{books[i]}'. \n" +
-                $"The book currently has a fine of {fines[i]}. \n We kindly request for it to be returned as soon as you are able to. \n" +
-                $"Every overdue day results in a 0.05 cent increase to you fine.\n" +
-                $"Have a great day";
-            request.ToEmail = emails[i];
-            await SendEmailAsync(request);
-        }
-    }
-
     public async Task SendCompletedReservationEmailAsync(string email, string book)
     {
         var request = new MailRequest();
@@ -70,6 +54,29 @@ public class MailService : IMailService
         request.Body = $"Hello, we would just like to inform you of your Book Reservation for the book '{book}'";
         request.ToEmail = email;
 
+        await SendEmailAsync(request);
+    }
+
+    public async Task SendCancelledReservationEmailAsync(string email, string book)
+    {
+        var request = new MailRequest();
+        request.Subject = "Reservation Cancelled";
+
+        request.Body = $"Hello, we would just like to inform you of the cancellation of your Book Reservation of '{book}'.";
+        request.ToEmail = email;
+        await SendEmailAsync(request);
+    }
+
+    public async Task SendOverdueBookEmailAsync(string email, string book, decimal fine)
+    {
+        var request = new MailRequest();
+        request.Subject = "Overdue Book";
+
+        request.Body = $"Hello, we would just like to inform you tha you are in possession of the overdue Book '{book}'. \n" +
+            $"The book currently has a fine of {fine}. \n We kindly request for it to be returned as soon as you are able to. \n" +
+            $"Every overdue day results in a 0.05 cent increase to you fine.\n" +
+            $"Have a great day";
+        request.ToEmail = email;
         await SendEmailAsync(request);
     }
 }

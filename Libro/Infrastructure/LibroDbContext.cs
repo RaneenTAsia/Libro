@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Infrastructure.Persistence.EntityConfigurations;
+using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -33,7 +34,8 @@ namespace Infrastructure
         public IQueryable<ReadingListItemFunctionResult> ReadingListItemsFunctionResults(int ReadingListId) => FromExpression(expression: () => ReadingListItemsFunctionResults(ReadingListId));
         public DbSet<Review> Reviews { get; set; }
         public IQueryable<BookReviewsFunctionResult> BookReviewsFunctionResults(int BookId) => FromExpression(expression: () => BookReviewsFunctionResults(BookId));
-
+        public DbSet<BookTransactionJob> BookTransactionJobs { get; set; }
+        public DbSet<BookReservationJob> BookReservationJobs { get; set; }
 
         public LibroDbContext()
         {

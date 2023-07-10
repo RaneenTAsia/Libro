@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
 using Domain.Services;
+using Hangfire;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -15,15 +16,17 @@ namespace Application.Entities.Books.Handlers
         public readonly IBookReservationRepository _bookReservationRepository;
         public readonly IUserRepository _userRepository;
         public readonly IMailService _mailService;
+        public readonly IBookReservationJobRepository _jobRepository;
         public readonly ILogger<ReserveBookHandler> _logger;
         public readonly IMapper _mapper;
 
-        public ReserveBookHandler(IBookRepository bookRepository, IBookReservationRepository bookReservationRepository, IUserRepository userRepository, IMailService mailService, ILogger<ReserveBookHandler> logger, IMapper mapper)
+        public ReserveBookHandler(IBookRepository bookRepository, IBookReservationRepository bookReservationRepository, IUserRepository userRepository, IMailService mailService, IBookReservationJobRepository jobRepository, ILogger<ReserveBookHandler> logger, IMapper mapper)
         {
             _bookRepository = bookRepository;
             _bookReservationRepository = bookReservationRepository;
             _userRepository = userRepository;
             _mailService = mailService;
+            _jobRepository = jobRepository;
             _logger = logger;
             _mapper = mapper;
         }
@@ -64,6 +67,27 @@ namespace Application.Entities.Books.Handlers
 
             _logger.LogDebug("Sending reservation completion email to {0}", user.Email);
             await _mailService.SendCompletedReservationEmailAsync(user.Email, book.Title);
+
+            var emailJobId = BackgroundJob.Schedule(
+              () => _mailService.SendCancelledReservationEmailAsync(user.Email, book.Title),
+               TimeSpan.FromDays(14));
+
+            var removalJobId = BackgroundJob.Schedule(
+              () => _bookReservationRepository.DeleteBookReservationAsync(reservation),
+               TimeSpan.FromDays(14));
+
+            var emailJob = new BookReservationJob { JobId = emailJobId, BookReservationId = reservation.BookReservationId, BookReservationJobType = JobType.Email};
+
+            var jobEmailResult = await _jobRepository.AddBookReservationJobAsync(emailJob);
+
+            var deletionJob = new BookReservationJob { JobId = removalJobId, BookReservationId = reservation.BookReservationId, BookReservationJobType = JobType.Removal };
+
+            var jobDeletionResult = await _jobRepository.AddBookReservationJobAsync(deletionJob);
+
+            if (jobEmailResult== Result.Failed || jobDeletionResult == Result.Failed)
+            {
+                return (Result.Failed, "Was not able to schedule reservation removal");
+            }
 
             return (Result.Completed, "Successfully Reserved Book");
         }

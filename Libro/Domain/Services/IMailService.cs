@@ -11,7 +11,8 @@ namespace Domain.Services
     {
         Task SendEmailAsync(MailRequest mailRequest);
         Task SendCancelledReservationsEmailsAsync(List<string> emails, List<string> books);
-        Task SendOverdueBookEmailsAsync(List<string> emails, List<string> books, List<decimal> Fines);
+        Task SendCancelledReservationEmailAsync(string email, string book);
+        Task SendOverdueBookEmailAsync(string email, string book, decimal fine);
         Task SendCompletedReservationEmailAsync(string email, string book);
     }
 }

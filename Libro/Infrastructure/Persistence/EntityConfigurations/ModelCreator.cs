@@ -28,6 +28,8 @@ namespace Infrastructure.Persistence.EntityConfigurations
             ConfigureReadingItemsFluentValidations();
             ConfigureReadingListsFluentValidations();
             ConfigureReviewsFluentValidations();
+            ConfigureBookTransactionJobsFluentValidations();
+            ConfigureBookReservationFluentValidations();
         }
 
         public void SeedTables()
@@ -122,6 +124,20 @@ namespace Infrastructure.Persistence.EntityConfigurations
             ModelBuilder.Entity<Review>().Property(r => r.Rating).IsRequired();
             ModelBuilder.Entity<Review>().Property(r => r.ReviewContent).HasMaxLength(int.MaxValue);
             ModelBuilder.Entity<Review>().HasIndex(r => new { r.UserId, r.BookId }).IsUnique();
+        }
+
+        public void ConfigureBookTransactionJobsFluentValidations()
+        {
+            ModelBuilder.Entity<BookTransactionJob>().Property(bt => bt.JobId).IsRequired();
+            ModelBuilder.Entity<BookTransactionJob>().Property(bt => bt.BookTransactionJobType).IsRequired();
+            ModelBuilder.Entity<BookTransactionJob>().Property(bt => bt.BookTransactionId).IsRequired();
+        }
+
+        public void ConfigureBookReservationJobsFluentValidations()
+        {
+            ModelBuilder.Entity<BookReservationJob>().Property(bt => bt.JobId).IsRequired();
+            ModelBuilder.Entity<BookReservationJob>().Property(bt => bt.BookReservationJobType).IsRequired();
+            ModelBuilder.Entity<BookReservationJob>().Property(bt => bt.BookReservationId).IsRequired();
         }
 
         public void SetUpRelationships()
