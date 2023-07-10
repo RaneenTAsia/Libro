@@ -6,6 +6,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -54,8 +55,8 @@ namespace LibroTests.HandlerTests.BookTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Failed, result.Item1);
-            Assert.Equal("Was not able to Add Book", result.Item2);
+            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Was not able to Add Book", (result as BadRequestObjectResult)?.Value);
         }
 
         [Fact]
@@ -75,8 +76,8 @@ namespace LibroTests.HandlerTests.BookTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Completed, result.Item1);
-            Assert.Equal("Successfully Added Book", result.Item2);
+            Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Successfully Added Book", (result as OkObjectResult)?.Value);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Application.Entities.Books.Commands
 {
-    public class AddBookCommand : IRequest<(Result,string)>
+    public class AddBookCommand : IRequest<ActionResult>
     {
         public string Title { get; set; }
         public string? Description { get; set; }

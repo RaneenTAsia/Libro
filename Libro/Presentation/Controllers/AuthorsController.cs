@@ -1,6 +1,5 @@
 ﻿using Application.DTOs;
 using Application.Entities.Authors.Commands;
-using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,10 +29,7 @@ namespace Presentation.Controllers
 
             var result = await _mediator.Send(command);
 
-            if (result.Item1 == Result.Failed)
-                return BadRequest(result.Item2);
-
-            return Ok(result.Item2);
+            return result;
         }
 
         [HttpPut("{authorId}")]

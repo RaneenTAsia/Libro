@@ -3,11 +3,13 @@ using AutoMapper;
 using Domain.Enums;
 using Domain.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Linq.Expressions;
 
 namespace Application.Entities.Users.Handlers
 {
-    public class ChangeUserRoleHandler : IRequestHandler<ChangeUserRoleCommand, (Result, string)>
+    public class ChangeUserRoleHandler : IRequestHandler<ChangeUserRoleCommand, ActionResult>
     {
         public readonly IUserRepository _userRepository;
         public readonly ILogger<ChangeUserRoleHandler> _logger;
@@ -18,7 +20,7 @@ namespace Application.Entities.Users.Handlers
             _logger = logger;
         }
 
-        public async Task<(Result, string)> Handle(ChangeUserRoleCommand request, CancellationToken cancellationToken)
+        public async Task<ActionResult> Handle(ChangeUserRoleCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserByIdAsync(request.UserId);
 
@@ -26,14 +28,14 @@ namespace Application.Entities.Users.Handlers
             if (user == null)
             {
                 _logger.LogDebug("User with UserId {0} does not exist", request.UserId);
-                return (Result.Failed, $"User with userId {request.UserId} does not exist");
+                return new NotFoundObjectResult($"User with userId {request.UserId} does not exist");
             }
 
             if (user.Role == (Role)request.Role)
             {
                 resultMessage = "User already has this role";
                 _logger.LogDebug(resultMessage);
-                return (Result.Failed, resultMessage);
+                return new BadRequestObjectResult(resultMessage);
             }
 
             _logger.LogDebug("User with UserId {0} has role {1} before update", user.UserId, user.Role);
@@ -44,7 +46,7 @@ namespace Application.Entities.Users.Handlers
 
             _logger.LogDebug("User with UserId {0} has role {1} after update", user.UserId, user.Role);
 
-            return (Result.Completed, "Successfulyy changed role");
+            return new OkObjectResult( "Successfulyy changed role");
         }
     }
 }

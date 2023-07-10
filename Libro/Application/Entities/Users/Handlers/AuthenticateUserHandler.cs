@@ -2,6 +2,7 @@
 using Domain.Enums;
 using Domain.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -11,7 +12,7 @@ using System.Text;
 
 namespace Application.Entities.Users.Handlers
 {
-    public class AuthenticateUserHandler : IRequestHandler<AuthenticateUserQuery, (string, Result)>
+    public class AuthenticateUserHandler : IRequestHandler<AuthenticateUserQuery, ActionResult>
     {
         public readonly IUserRepository _userRepository;
         public readonly ILogger<AuthenticateUserHandler> _logger;
@@ -24,7 +25,7 @@ namespace Application.Entities.Users.Handlers
             _configuration = configuration;
         }
 
-        public async Task<(string, Result)> Handle(AuthenticateUserQuery request, CancellationToken cancellationToken)
+        public async Task<ActionResult> Handle(AuthenticateUserQuery request, CancellationToken cancellationToken)
         {
             _logger.LogDebug("User attempts logging in with email {0}", request.Email);
 
@@ -33,7 +34,7 @@ namespace Application.Entities.Users.Handlers
             if (result == Result.Failed)
             {
                 _logger.LogDebug("Incorrect email or password");
-                return ("Incorrect email or password", Result.Failed);
+                return new BadRequestObjectResult("Incorrect email or password");
             }
 
             _logger.LogDebug($"Login success");
@@ -66,7 +67,7 @@ namespace Application.Entities.Users.Handlers
                .WriteToken(jwtSecurityToken);
 
             _logger.LogDebug($"returning token");
-            return (tokenToReturn, Result.Completed);
+            return new OkObjectResult(tokenToReturn);
         }
     }
 }

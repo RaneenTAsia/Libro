@@ -6,11 +6,12 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Entities.Users.Handlers
 {
-    public class CreateUserHandler : IRequestHandler<CreateUserCommand, (UserDTO, Result)>
+    public class CreateUserHandler : IRequestHandler<CreateUserCommand, ActionResult>
     {
         public readonly IUserRepository _userRepository;
         public readonly IMapper _mapper;
@@ -23,11 +24,11 @@ namespace Application.Entities.Users.Handlers
             _logger = logger;
         }
 
-        public async Task<(UserDTO, Result)> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<ActionResult> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             if (await _userRepository.UserExistsByEmailAsync(request.Email))
             {
-                return (null, Result.Failed);
+                return new NotFoundObjectResult("User with this email does not exist");
             }
 
             var userToAdd = new User { Email = request.Email, Username = request.Username };
@@ -38,8 +39,13 @@ namespace Application.Entities.Users.Handlers
 
             _logger.LogDebug("Created User with username: {0} and email: {1}", user.Username, user.Email);
 
+            if(result == Result.Failed)
+            {
+                return new ConflictObjectResult("User was not added");
+            }
+
             var userAdded = _mapper.Map<UserDTO>(user);
-            return (userAdded, result);
+            return new OkObjectResult(userAdded);
         }
 
     }

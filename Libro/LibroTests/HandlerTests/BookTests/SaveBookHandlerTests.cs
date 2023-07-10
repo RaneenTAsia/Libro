@@ -4,6 +4,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
@@ -52,8 +53,8 @@ namespace LibroTests.HandlerTests.BookTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Failed, result.Item1);
-            Assert.Equal("Book Does Not Exist", result.Item2);
+            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("Book Does Not Exist", (result as NotFoundObjectResult)?.Value);
         }
 
         [Fact]
@@ -77,8 +78,8 @@ namespace LibroTests.HandlerTests.BookTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Failed, result.Item1);
-            Assert.Equal("Book already in List", result.Item2);
+            Assert.IsType<ConflictObjectResult>(result);
+            Assert.Equal("Book already in List", (result as ConflictObjectResult)?.Value);
         }
 
         [Fact]
@@ -106,8 +107,8 @@ namespace LibroTests.HandlerTests.BookTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Failed, result.Item1);
-            Assert.Equal("Was not able to register reservation", result.Item2);
+            Assert.IsType<ConflictObjectResult>(result);
+            Assert.Equal("Was not able to register reservation", (result as ConflictObjectResult)?.Value);
         }
 
         [Fact]
@@ -135,8 +136,8 @@ namespace LibroTests.HandlerTests.BookTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Completed, result.Item1);
-            Assert.Equal("Successfully added book to list", result.Item2);
+            Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Successfully added book to list", (result as OkObjectResult)?.Value);
         }
     }
 }

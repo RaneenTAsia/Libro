@@ -75,7 +75,7 @@ namespace Presentation.Controllers
         {
             var tokenUserId = Convert.ToInt32(User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"));
 
-            var command = new GetReviewsQuery { BookId = bookId , pageNumber = pageNumber, pageSize = pageSize};
+            var command = new GetReviewsQuery { BookId = bookId, pageNumber = pageNumber, pageSize = pageSize };
 
             var result = await _mediator.Send(command);
 

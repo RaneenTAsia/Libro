@@ -53,8 +53,8 @@ namespace LibroTests.HandlerTests.AuthorTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Failed, result.Item1);
-            Assert.Equal("Was not able to Add Author", result.Item2);
+            Assert.IsType<ConflictObjectResult>(result);
+            Assert.Equal("Was not able to Add Author", (result as ConflictObjectResult)?.Value);
         }
 
         [Fact]
@@ -79,8 +79,8 @@ namespace LibroTests.HandlerTests.AuthorTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Completed, result.Item1);
-            Assert.Equal("Successfully Added Author", result.Item2);
+            Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Successfully Added Author", (result as OkObjectResult)?.Value);
         }
     }
 }

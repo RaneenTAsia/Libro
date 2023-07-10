@@ -1,7 +1,5 @@
-﻿using Application.DTOs;
-using Application.Entities.Users.Commands;
+﻿using Application.Entities.Users.Commands;
 using Application.Entities.Users.Queries;
-using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,10 +27,7 @@ namespace Presentation.Controllers
 
             var result = await _mediator.Send(userForCreation);
 
-            if (result.Item2 == Result.Failed)
-                return BadRequest("Email already exists");
-
-            return Ok(result.Item1);
+            return result;
         }
 
         [HttpPost("login")]
@@ -46,10 +41,7 @@ namespace Presentation.Controllers
 
             var result = await _mediator.Send(userToLogin);
 
-            if (result.Item2 == Result.Failed)
-                return Unauthorized(result.Item1);
-
-            return Ok(result.Item1);
+            return result;
         }
     }
 }

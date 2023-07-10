@@ -1,7 +1,6 @@
 ﻿using Application.DTOs;
 using Application.Entities.Books.Commands;
 using Application.Entities.Books.Queries;
-using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -64,14 +63,10 @@ namespace Presentation.Controllers
         {
             var userId = Convert.ToInt32(User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"));
             var command = new ReserveBookCommand { UserId = userId, BookId = id };
+
             var result = await _mediator.Send(command);
 
-            if (result.Item1 == Domain.Enums.Result.Failed)
-            {
-                return BadRequest(result.Item2);
-            }
-
-            return Ok(result.Item2);
+            return result;
         }
 
         [HttpPost("checkout")]
@@ -139,10 +134,7 @@ namespace Presentation.Controllers
 
             var result = await _mediator.Send(command);
 
-            if (result.Item1 == Result.Failed)
-                return BadRequest(result.Item2);
-
-            return Ok(result.Item2);
+            return result;
         }
 
         [HttpPut("{bookId}")]
@@ -185,14 +177,8 @@ namespace Presentation.Controllers
             var command = new SaveBookCommand { BookId = bookId, ReadingListId = 1 };
             var result = await _mediator.Send(command);
 
-            if (result.Item1 == Result.Failed)
-            {
-                return BadRequest(result.Item2);
-            }
-
-            return Ok(result.Item2);
+            return result;
         }
-
 
         [Authorize("MustBePatron")]
         [HttpGet("recommendations")]
@@ -200,7 +186,7 @@ namespace Presentation.Controllers
         {
             var tokenUserId = Convert.ToInt32(User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"));
 
-            var query = new GetBookRecommendationsQuery{ UserId = tokenUserId, pageNumber = pageNumber, pageSize = pageSize};
+            var query = new GetBookRecommendationsQuery { UserId = tokenUserId, pageNumber = pageNumber, pageSize = pageSize };
 
             var result = await _mediator.Send(query);
 

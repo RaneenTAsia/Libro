@@ -1,5 +1,6 @@
 ﻿using Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Entities.Books.Commands
 {
-    public class ReserveBookCommand :IRequest<(Result,string)>
+    public class ReserveBookCommand :IRequest<ActionResult>
     {
         public int UserId { get; set; }
         public int BookId { get; set; }

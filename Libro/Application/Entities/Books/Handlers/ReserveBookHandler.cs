@@ -6,11 +6,12 @@ using Domain.Repositories;
 using Domain.Services;
 using Hangfire;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Entities.Books.Handlers
 {
-    public class ReserveBookHandler : IRequestHandler<ReserveBookCommand, (Result, string)>
+    public class ReserveBookHandler : IRequestHandler<ReserveBookCommand, ActionResult>
     {
         public readonly IBookRepository _bookRepository;
         public readonly IBookReservationRepository _bookReservationRepository;
@@ -31,7 +32,7 @@ namespace Application.Entities.Books.Handlers
             _mapper = mapper;
         }
 
-        public async Task<(Result,string)> Handle(ReserveBookCommand request, CancellationToken cancellationToken)
+        public async Task<ActionResult> Handle(ReserveBookCommand request, CancellationToken cancellationToken)
         {
             _logger.LogDebug("Checking if Book {0} exists", request.BookId);
 
@@ -39,14 +40,14 @@ namespace Application.Entities.Books.Handlers
 
             if(book == null)
             {
-                return (Result.Failed, "Book Does Not Exist");
+                return new NotFoundObjectResult("Book Does Not Exist");
             }
 
             var isAvailable = await _bookRepository.CheckBookIsAvailableAsync(request.BookId);
 
             if(!isAvailable)
             {
-                return (Result.Failed, "Book not available to reserve");
+                return new ConflictObjectResult("Book not available to reserve");
             }
 
             await _bookRepository.SetBookAsReservedAsync(request.BookId);
@@ -59,7 +60,7 @@ namespace Application.Entities.Books.Handlers
 
             if (result == Result.Failed)
             {
-                return (Result.Failed, "Was not able to register reservation");
+                return new ConflictObjectResult( "Was not able to register reservation");
             }
 
             //send email for completed reservation
@@ -86,10 +87,10 @@ namespace Application.Entities.Books.Handlers
 
             if (jobEmailResult== Result.Failed || jobDeletionResult == Result.Failed)
             {
-                return (Result.Failed, "Was not able to schedule reservation removal");
+                return new ConflictObjectResult("Was not able to schedule reservation removal");
             }
 
-            return (Result.Completed, "Successfully Reserved Book");
+            return new OkObjectResult("Successfully Reserved Book");
         }
     }
 }

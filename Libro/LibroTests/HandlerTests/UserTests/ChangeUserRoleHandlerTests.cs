@@ -5,6 +5,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
@@ -51,8 +52,8 @@ namespace LibroTests.HandlerTests.UserTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Failed, result.Item1);
-            Assert.Equal($"User with userId {command.UserId} does not exist", result.Item2);
+            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal($"User with userId {command.UserId} does not exist", (result as NotFoundObjectResult)?.Value);
         }
 
         [Fact]
@@ -80,8 +81,8 @@ namespace LibroTests.HandlerTests.UserTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Failed, result.Item1);
-            Assert.Equal("User already has this role", result.Item2);
+            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("User already has this role", (result as BadRequestObjectResult)?.Value);
         }
 
         [Fact]
@@ -109,8 +110,8 @@ namespace LibroTests.HandlerTests.UserTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Completed, result.Item1);
-            Assert.Equal("Successfulyy changed role", result.Item2);
+            Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Successfulyy changed role", (result as OkObjectResult)?.Value);
         }
     }
 }

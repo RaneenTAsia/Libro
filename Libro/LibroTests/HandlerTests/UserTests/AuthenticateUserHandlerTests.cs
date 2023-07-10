@@ -52,8 +52,8 @@ namespace LibroTests.HandlerTests.UserTests
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Failed, result.Item2);
-            Assert.Equal("Incorrect email or password", result.Item1);
+            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Incorrect email or password", (result as BadRequestObjectResult)?.Value);
         }
 
         [Fact]
@@ -89,7 +89,8 @@ namespace LibroTests.HandlerTests.UserTests
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Completed, result.Item2);
+            Assert.IsType<OkObjectResult>(result);
+            Assert.IsType<string>((result as OkObjectResult)?.Value);
         }
     }
 }

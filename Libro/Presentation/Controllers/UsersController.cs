@@ -1,14 +1,10 @@
 ﻿using Application.DTOs;
 using Application.Entities.Users.Commands;
 using Application.Entities.Users.Queries;
-using AutoMapper;
-using Domain.Entities;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -39,12 +35,7 @@ namespace Presentation.Controllers
 
             var result = await _mediator.Send(request);
 
-            if (result.Item1 == Result.Failed)
-            {
-                return BadRequest(result.Item2);
-            }
-
-            return Ok(result.Item2);
+            return result;
         }
 
         [Authorize]
@@ -88,7 +79,7 @@ namespace Presentation.Controllers
         [HttpPut("{userId}/update")]
         public async Task<ActionResult> UpdateUserEmail(int userId, ProfileToUpdateDTO profile)
         {
-            if (!ModelState.IsValid  || !TryValidateModel(profile))
+            if (!ModelState.IsValid || !TryValidateModel(profile))
             {
                 return BadRequest(ModelState);
             }

@@ -73,8 +73,8 @@ namespace LibroTests.HandlerTests.BookTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(result.Item1, Result.Failed);
-            Assert.Equal("Book Does Not Exist", result.Item2);
+            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("Book Does Not Exist", (result as NotFoundObjectResult)?.Value);
         }
 
         [Fact]
@@ -99,8 +99,8 @@ namespace LibroTests.HandlerTests.BookTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(result.Item1, Result.Failed);
-            Assert.Equal("Book not available to reserve", result.Item2);
+            Assert.IsType<ConflictObjectResult>(result);
+            Assert.Equal("Book not available to reserve", (result as ConflictObjectResult)?.Value);
         }
 
         [Fact]
@@ -128,8 +128,8 @@ namespace LibroTests.HandlerTests.BookTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(result.Item1, Result.Failed);
-            Assert.Equal("Was not able to register reservation", result.Item2);
+            Assert.IsType<ConflictObjectResult>(result);
+            Assert.Equal("Was not able to register reservation", (result as ConflictObjectResult)?.Value);
         }
 
         [Fact]
@@ -165,8 +165,8 @@ namespace LibroTests.HandlerTests.BookTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(result.Item1, Result.Completed);
-            Assert.Equal("Successfully Reserved Book", result.Item2);
+            Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Successfully Reserved Book", (result as OkObjectResult)?.Value);
         }
     }
 }

@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Application.Entities.Books.Handlers
 {
-    public class AddBookHandler : IRequestHandler<AddBookCommand, (Result,string)>
+    public class AddBookHandler : IRequestHandler<AddBookCommand, ActionResult>
     {
         public readonly IBookRepository _bookRepository;
         public readonly IBookGenreRepository _bookGenreRepository;
@@ -30,7 +31,7 @@ namespace Application.Entities.Books.Handlers
             _mapper = mapper;
         }
 
-        public async Task<(Result, string)> Handle(AddBookCommand request, CancellationToken cancellationToken)
+        public async Task<ActionResult> Handle(AddBookCommand request, CancellationToken cancellationToken)
         {
             _logger.LogDebug("Map AddBookCommand to Book Entity");
             var bookToBeAdded = _mapper.Map<Book>(request);
@@ -55,12 +56,12 @@ namespace Application.Entities.Books.Handlers
             if(result == Result.Failed)
             {
                 _logger.LogDebug("Failed to add book");
-                return (Result.Failed, "Was not able to Add Book");
+                return new BadRequestObjectResult( "Was not able to Add Book");
             }
 
             _logger.LogDebug("Successfuly added book");
 
-            return (Result.Completed, "Successfully Added Book");
+            return new OkObjectResult( "Successfully Added Book");
         }
     }
 }

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Application.Entities.Authors.Handlers
 {
-    public class AddAuthorHandler : IRequestHandler<AddAuthorCommand, (Result, string)>
+    public class AddAuthorHandler : IRequestHandler<AddAuthorCommand, ActionResult>
     {
         public readonly IBookRepository _bookRepository;
         public readonly IAuthorRepository _authorsRepository;
@@ -29,7 +29,7 @@ namespace Application.Entities.Authors.Handlers
             _mapper = mapper;
         }
 
-        public async Task<(Result, string)> Handle(AddAuthorCommand request, CancellationToken cancellationToken)
+        public async Task<ActionResult> Handle(AddAuthorCommand request, CancellationToken cancellationToken)
         {
             _logger.LogDebug("Map AddBookCommand to Book Entity");
             var authorToBeAdded = _mapper.Map<Author>(request);
@@ -47,12 +47,12 @@ namespace Application.Entities.Authors.Handlers
             if (result == Result.Failed)
             {
                 _logger.LogDebug("Failed to add Author");
-                return (Result.Failed, "Was not able to Add Author");
+                return new ConflictObjectResult( "Was not able to Add Author");
             }
 
             _logger.LogDebug("Successfuly added Author");
 
-            return (Result.Completed, "Successfully Added Author");
+            return new OkObjectResult("Successfully Added Author");
         }
     }
 }

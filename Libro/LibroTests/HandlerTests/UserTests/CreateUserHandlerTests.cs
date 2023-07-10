@@ -5,6 +5,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
@@ -55,7 +56,8 @@ namespace LibroTests.HandlerTests.UserTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Failed, result.Item2);
+            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("User with this email does not exist", (result as NotFoundObjectResult)?.Value);
         }
 
         [Fact]
@@ -82,7 +84,8 @@ namespace LibroTests.HandlerTests.UserTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Failed, result.Item2);
+            Assert.IsType<ConflictObjectResult>(result);
+            Assert.Equal("User was not added", (result as ConflictObjectResult)?.Value);
         }
 
         [Fact]
@@ -113,8 +116,8 @@ namespace LibroTests.HandlerTests.UserTests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Equal(Result.Completed, result.Item2);
-            Assert.IsType<UserDTO>(result.Item1);
+            Assert.IsType<OkObjectResult>(result);
+            Assert.IsType<UserDTO>((result as OkObjectResult)?.Value);
         }
     }
 }

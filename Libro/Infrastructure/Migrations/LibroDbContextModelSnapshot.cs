@@ -285,28 +285,6 @@ namespace Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Domain.Entities.BookReservationEmailJob", b =>
-                {
-                    b.Property<int>("BookReservationEmailJobId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookReservationEmailJobId"));
-
-                    b.Property<int>("BookReservationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("JobId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("BookReservationEmailJobId");
-
-                    b.HasIndex("BookReservationId");
-
-                    b.ToTable("BookReservationEmailJobs");
-                });
-
             modelBuilder.Entity("Domain.Entities.BookReservationJob", b =>
                 {
                     b.Property<int>("BookReservationJobId")
@@ -316,6 +294,9 @@ namespace Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookReservationJobId"));
 
                     b.Property<int>("BookReservationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookReservationJobType")
                         .HasColumnType("int");
 
                     b.Property<string>("JobId")
@@ -458,26 +439,29 @@ namespace Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Domain.Entities.BookTransactionEmailJob", b =>
+            modelBuilder.Entity("Domain.Entities.BookTransactionJob", b =>
                 {
-                    b.Property<int>("BookTransactionEmailJobId")
+                    b.Property<int>("BookTransactionJobId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookTransactionEmailJobId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookTransactionJobId"));
 
                     b.Property<int>("BookTransactionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookTransactionJobType")
                         .HasColumnType("int");
 
                     b.Property<string>("JobId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("BookTransactionEmailJobId");
+                    b.HasKey("BookTransactionJobId");
 
                     b.HasIndex("BookTransactionId");
 
-                    b.ToTable("BookTransactionEmailJobs");
+                    b.ToTable("BookTransactionJobs");
                 });
 
             modelBuilder.Entity("Domain.Entities.ReadingItem", b =>
@@ -653,8 +637,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 1,
                             Email = "Rami@gmail.com",
-                            PasswordHash = "o06RFDkRzgtFYgN/1/iSC3pyYki85Jrdp4QKVw416AU=",
-                            PasswordSalt = "pLc9M0qPCrFKWQ6grY/FUw==",
+                            PasswordHash = "OH5EpNz6h6uVimbhDqIAsj9tqEtXuDKEHA2gRSDH8ow=",
+                            PasswordSalt = "CWKnXgNo+RLAQQjjNtRYYg==",
                             Role = 1,
                             Username = "Rami"
                         },
@@ -662,8 +646,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 2,
                             Email = "RayyanTawfieg@gmail.com",
-                            PasswordHash = "4y1KDlXiBCzozHpPbKZmntM83HqZLlsHc3O5E0nZWdQ=",
-                            PasswordSalt = "pLc9M0qPCrFKWQ6grY/FUw==",
+                            PasswordHash = "zLEJQMfT25+yYe0+kxrb55TzXPMTbR09uAXEumSJeUw=",
+                            PasswordSalt = "CWKnXgNo+RLAQQjjNtRYYg==",
                             Role = 2,
                             Username = "Rayyan"
                         },
@@ -671,8 +655,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 3,
                             Email = "Raneenasia101@gmail.com",
-                            PasswordHash = "tJtA8dzvv7eViJPidpYnNkvU5OVoMHkRMnNbzeZnuRo=",
-                            PasswordSalt = "pLc9M0qPCrFKWQ6grY/FUw==",
+                            PasswordHash = "yYh1S04MxtLRA4axaU+2lDpQBZ6QI63WtQouiZFxqZ0=",
+                            PasswordSalt = "CWKnXgNo+RLAQQjjNtRYYg==",
                             Role = 3,
                             Username = "Raneen"
                         },
@@ -680,8 +664,8 @@ namespace Infrastructure.Migrations
                         {
                             UserId = 4,
                             Email = "Reema@gmail.com",
-                            PasswordHash = "Nmm06/bCuFcraGF8wMyJhd8LfzEfg/uE+5dOtzWPCvc=",
-                            PasswordSalt = "pLc9M0qPCrFKWQ6grY/FUw==",
+                            PasswordHash = "uOOXk0Hc99bVn7086i11TMJMQSS8KrbKHmhsjR6wNhY=",
+                            PasswordSalt = "CWKnXgNo+RLAQQjjNtRYYg==",
                             Role = 3,
                             Username = "Reema"
                         });
@@ -808,17 +792,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.BookReservationEmailJob", b =>
-                {
-                    b.HasOne("Domain.Entities.BookReservation", "BookReservation")
-                        .WithMany()
-                        .HasForeignKey("BookReservationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BookReservation");
-                });
-
             modelBuilder.Entity("Domain.Entities.BookReservationJob", b =>
                 {
                     b.HasOne("Domain.Entities.BookReservation", "BookReservation")
@@ -868,7 +841,7 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.BookTransactionEmailJob", b =>
+            modelBuilder.Entity("Domain.Entities.BookTransactionJob", b =>
                 {
                     b.HasOne("Domain.Entities.BookTransaction", "BookTransaction")
                         .WithMany()
